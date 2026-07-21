@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#fdf6e3"/>
+  <!-- broke billionaire doodle: x_x eyes, hat falling off -->
+  <g stroke="#2b2b2b" stroke-width="16" stroke-linecap="round">
+    <!-- body blob -->
+    <path d="M140,290 C130,200 200,150 260,150 C330,150 390,205 380,295 C372,375 330,420 256,420 C185,420 148,370 140,290 Z" fill="#cfe6f5"/>
+    <!-- top hat, askew -->
+    <g transform="rotate(-24 300 105)">
+      <rect x="230" y="40" width="140" height="80" rx="8" fill="#2b2b2b" stroke="none"/>
+      <rect x="200" y="112" width="200" height="26" rx="13" fill="#2b2b2b" stroke="none"/>
+    </g>
+    <!-- x_x eyes -->
+    <path d="M190,265 L230,305 M230,265 L190,305" fill="none"/>
+    <path d="M300,265 L340,305 M340,265 L300,305" fill="none"/>
+    <!-- frown -->
+    <path d="M215,365 C240,345 290,345 315,365" fill="none"/>
+    <!-- monocle, fallen, dangling -->
+    <circle cx="345" cy="330" r="26" fill="none" stroke-width="10"/>
+    <path d="M345,304 L350,285" fill="none" stroke-width="8"/>
+  </g>
+  <!-- falling money -->
+  <g font-family="Comic Sans MS, cursive" font-size="52" fill="#e05252">
+    <text x="70" y="120" transform="rotate(-15 70 120)">$</text>
+    <text x="420" y="200" transform="rotate(20 420 200)">$</text>
+    <text x="90" y="420" transform="rotate(10 90 420)">$</text>
+  </g>
+</svg>

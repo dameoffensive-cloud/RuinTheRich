@@ -1,0 +1,15 @@
+{
+  "name": "Ruin The Rich",
+  "short_name": "RuinTheRich",
+  "description": "A game about four terrible rich doodles and the little freak (you) who ruins them.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf6e3",
+  "theme_color": "#fdf6e3",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

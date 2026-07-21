@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fdf6e3">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>RUIN THE RICH — a doodle economy crime</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --paper:#fdf6e3; --card:#fffdf5; --red:#e05252; --green:#4a9e5c;
+    --fs:1; /* font scale multiplier, user adjustable */
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  button,select{touch-action:manipulation}
+  button:focus-visible,select:focus-visible,button:focus,select:focus{
+    outline:3px dashed var(--red); outline-offset:2px;
+  }
+  html{
+    background:var(--paper);
+    background-image:radial-gradient(#00000008 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  body{
+    margin:0 auto; max-width:1700px; padding:14px; padding-bottom:max(14px, env(safe-area-inset-bottom)); background:transparent; color:var(--ink);
+    font-family:"Comic Sans MS","Comic Sans","Segoe Print",cursive;
+    user-select:none;
+  }
+  h1{margin:0; font-size:calc(clamp(20px,5vw,26px)*var(--fs)); letter-spacing:1px}
+  h1 span{color:var(--red)}
+  .sub{font-size:calc(12px*var(--fs)); opacity:.7; margin:2px 0 10px}
+  .topbar{display:flex; flex-wrap:wrap; gap:10px; align-items:baseline}
+  .cash{font-size:calc(20px*var(--fs)); border:2.5px solid var(--ink); border-radius:14px 18px 15px 17px/17px 14px 18px 15px; padding:4px 14px; background:#fff; box-shadow:3px 3px 0 #00000022}
+  .badges{font-size:calc(18px*var(--fs))}
+  .sysbtns{margin-left:auto}
+  main{display:grid; grid-template-columns:1fr minmax(300px,380px); gap:14px}
+  @media (max-width:900px){ main{grid-template-columns:1fr} }
+  .panel{
+    background:var(--card); border:2.5px solid var(--ink); padding:12px;
+    border-radius:18px 14px 20px 12px/12px 20px 14px 18px; box-shadow:4px 4px 0 #00000018;
+  }
+  .panel h2{margin:0 0 8px; font-size:calc(16px*var(--fs)); border-bottom:2px dashed #bbb; padding-bottom:4px}
+  /* billionaires: grid on desktop, swipeable row on phones */
+  .bils{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:10px; margin-bottom:14px}
+  @media (max-width:700px){
+    .bils{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:6px}
+    .bil{min-width:240px; scroll-snap-align:center}
+  }
+  .bil{position:relative; text-align:center; padding:10px 8px 8px}
+  .bil .doodle{animation:wobble 2.6s ease-in-out infinite}
+  .bil:nth-child(2) .doodle{animation-delay:.4s}
+  .bil:nth-child(3) .doodle{animation-delay:.9s}
+  .bil:nth-child(4) .doodle{animation-delay:1.3s}
+  .bil.hop .doodle{animation:hop .45s ease}
+  .bil.dead{filter:grayscale(1); opacity:.75}
+  .bil .name{font-weight:bold; font-size:calc(14px*var(--fs))}
+  .bil .title{font-size:calc(11px*var(--fs)); opacity:.65; margin-bottom:4px}
+  .bil .rule{font-size:calc(11px*var(--fs)); background:#fff8c9; border:1.5px dashed #c9b458; border-radius:8px; padding:5px 6px; margin:6px 0; min-height:52px}
+  .worthwrap{height:14px; border:2px solid var(--ink); border-radius:8px; background:#fff; overflow:hidden}
+  .worthbar{height:100%; background:var(--green); transition:width .4s}
+  .worthtxt{font-size:calc(12px*var(--fs)); margin-top:2px}
+  .toys{font-size:calc(14px*var(--fs)); min-height:20px}
+  .bubble{
+    position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+    background:#fff; border:2px solid var(--ink); border-radius:12px; padding:3px 8px;
+    font-size:calc(11px*var(--fs)); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .3s; z-index:5;
+  }
+  .bubble.show{opacity:1}
+  @keyframes wobble{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.5deg)}}
+  @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-12px) rotate(-4deg)}}
+  /* market */
+  .tablewrap{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:calc(13px*var(--fs))}
+  td,th{padding:6px 4px; border-bottom:1.5px dashed #ccc; text-align:left; vertical-align:middle}
+  .price{font-weight:bold; font-size:calc(15px*var(--fs))}
+  .up{color:var(--green)} .down{color:var(--red)}
+  button{
+    font-family:inherit; font-size:calc(12px*var(--fs)); background:#fff; color:var(--ink);
+    border:2px solid var(--ink); border-radius:10px 8px 11px 9px/9px 11px 8px 10px;
+    padding:5px 10px; cursor:pointer; box-shadow:2px 2px 0 #00000022; margin:1px;
+    min-height:30px;
+  }
+  @media (pointer:coarse){
+    button{min-height:42px; padding:8px 12px}
+  }
+  button:hover:not(:disabled){background:#fff3b0; transform:translateY(-1px)}
+  button:active:not(:disabled){transform:translateY(1px); box-shadow:none}
+  button:disabled{opacity:.4; cursor:not-allowed}
+  button.dump{background:#ffe0e0}
+  .btnlike{
+    display:inline-block; font-size:calc(12px*var(--fs)); background:#fff; color:var(--ink);
+    border:2px solid var(--ink); border-radius:10px 8px 11px 9px/9px 11px 8px 10px;
+    padding:5px 10px; box-shadow:2px 2px 0 #00000022; margin:1px; text-decoration:none;
+  }
+  .btnlike:hover{background:#fff3b0}
+  select{
+    font-family:inherit; font-size:calc(12px*var(--fs)); background:#fff; color:var(--ink);
+    border:2px solid var(--ink); border-radius:10px; padding:5px 6px; min-height:30px;
+    box-shadow:2px 2px 0 #00000022; max-width:130px;
+  }
+  /* upgrades */
+  .upg{display:flex; justify-content:space-between; align-items:center; gap:6px; padding:6px 0; border-bottom:1.5px dashed #ddd; font-size:calc(12px*var(--fs))}
+  .upg b{font-size:calc(13px*var(--fs))}
+  .upg small{display:block; opacity:.7}
+  /* log */
+  #log{margin-top:14px; font-size:calc(12px*var(--fs)); max-height:150px; overflow-y:auto}
+  #log div{padding:2px 0; border-bottom:1px dotted #ddd}
+  #log .big{color:var(--red); font-weight:bold}
+  /* floating money */
+  .floaty{
+    position:fixed; top:84px; font-size:calc(22px*var(--fs)); font-weight:bold; z-index:60;
+    pointer-events:none; animation:rise 1.4s ease-out forwards; text-shadow:1px 1px 0 #fff;
+  }
+  .floaty.good{color:var(--green)} .floaty.bad{color:var(--red)}
+  @keyframes rise{from{opacity:1; transform:translateY(0)}to{opacity:0; transform:translateY(-70px)}}
+  /* overlay */
+  #overlay{
+    position:fixed; inset:0; background:#fdf6e3ee; display:none; z-index:50;
+    align-items:center; justify-content:center; text-align:center; flex-direction:column; padding:16px;
+  }
+  #overlay.show{display:flex}
+  #overlay h1{font-size:calc(clamp(30px,9vw,44px)*var(--fs)); animation:wobble 1s infinite}
+  #overlay p{max-width:440px; font-size:calc(14px*var(--fs))}
+  #overlay button{font-size:calc(16px*var(--fs)); padding:8px 18px; margin:4px}
+  .confetti{position:absolute; font-size:26px; animation:fall linear infinite}
+  @keyframes fall{from{transform:translateY(-8vh) rotate(0)}to{transform:translateY(108vh) rotate(720deg)}}
+  #hint{font-size:calc(11px*var(--fs)); opacity:.85; background:#e8f4e8; border:1.5px dashed var(--green); border-radius:8px; padding:6px; display:none; margin-top:6px}
+  #hint.show{display:block}
+  .spark{vertical-align:middle}
+  @media (min-width:1200px){
+    td,th{padding:10px 8px}
+    .spark svg,.spark{width:110px}
+  }
+  /* start screen */
+  #start{
+    position:fixed; inset:0; z-index:100; background:var(--paper);
+    background-image:radial-gradient(#00000008 1px, transparent 1px); background-size:22px 22px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; text-align:center; padding:20px;
+  }
+  #start h1{font-size:calc(clamp(30px,8vw,52px)*var(--fs))}
+  #startdoodles svg{width:66px; height:78px}
+  #start .startbtn{font-size:calc(17px*var(--fs)); padding:12px 22px; min-width:280px}
+  #start select{font-size:calc(14px*var(--fs)); padding:8px; max-width:220px}
+  #start .foot{font-size:calc(11px*var(--fs)); opacity:.6; max-width:460px}
+  /* respect reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    .bil .doodle,#overlay h1{animation:none}
+    .confetti{display:none}
+    .floaty{animation-duration:.6s}
+  }
+</style>
+</head>
+<body>
+<div id="start">
+  <h1>RUIN <span style="color:var(--red)">THE</span> RICH</h1>
+  <div id="startdoodles"></div>
+  <div class="foot" id="startsub"></div>
+  <select id="startlang" title="language"></select>
+  <button class="startbtn" id="btnGlobal"></button>
+  <button class="startbtn" id="btnGroup"></button>
+  <button class="startbtn" id="btnFree"></button>
+  <button id="fbbtn2" style="opacity:.75"></button>
+  <a id="kofi1" class="btnlike" style="display:none; opacity:.75" target="_blank" rel="noopener"></a>
+</div>
+<div class="topbar">
+  <h1 id="homebtn" style="cursor:pointer" title="back to menu">RUIN <span>THE</span> RICH</h1>
+  <div class="cash">💵 <span id="cash">0</span></div>
+  <div class="badges" id="badges"></div>
+  <div class="sysbtns">
+    <select id="langsel" title="language"></select>
+    <button id="crewbtn" title="crew mode: shared market with friends">👯</button>
+    <button id="fontbtn" title="text size">🔠</button>
+    <button id="modebtn" title="switch mode"></button>
+    <button id="mutebtn" title="sound" aria-label="toggle sound">🔊</button>
+    <button id="fbbtn"></button>
+    <button id="resetbtn" title="wipe save and start over"></button>
+  </div>
+</div>
+<div class="sub" id="subline"></div>
+
+<div class="bils panel" id="bils"></div>
+
+<main>
+  <section class="panel">
+    <h2><span id="marketH"></span> <button id="hintbtn" style="float:right"></button></h2>
+    <div id="hint"></div>
+    <div class="tablewrap"><table id="market"></table></div>
+  </section>
+  <aside class="panel">
+    <h2 id="upgradesH"></h2>
+    <div id="upgrades"></div>
+  </aside>
+</main>
+
+<div id="log" class="panel" role="log" aria-live="polite"></div>
+
+<div id="overlay">
+  <h1 id="winTitle"></h1>
+  <p id="overlaytext"></p>
+  <button id="sharebtn" style="display:none"></button>
+  <button id="prestige"></button>
+  <a id="kofi2" class="btnlike" style="display:none" target="_blank" rel="noopener"></a>
+</div>
+
+<script src="langs.js"></script>
+<script>
+"use strict";
+/* ---------- languages ----------
+   en + es live here; the other 23 live in langs.js (window.EXTRA_LANGS). */
+const LANGS={
+en:{
+  sub:"a game about four terrible rich doodles and the little freak (you) who ruins them. their strategies are public. that's the problem (for them).",
+  dailySub:"📅 DAILY #{0} — today's market: {1}. same billionaires for everyone. score = rounds to ruin all four.",
+  qChad:"Chadwick is EXTRA fomo", qIvanaJumpy:"Ivana is extra jumpy", qIvanaHard:"Ivana panics HARD",
+  qBaron:"the Baron overpays wildly", qGrimble:"Grimble's bubble is extra fragile", qNormal:"the market looks deceptively normal",
+  marketH:"📉 The Market", upgradesH:"🛒 Suspicious Upgrades", hintBtn:"how do i break this?",
+  hint:"one of them <b>copies your buys</b> at the top. one <b>panic-sells</b> when anything drops hard. one <b>buys every dip</b>, forever. so: buy → let the copycat pump it → DUMP everything → panic → everything's cheap → buy it all back. every lap, all four get poorer. the \"Burner Accounts\" upgrade makes your dumps hit way harder. also the water guy ruins himself if you just leave him alone. one catch: they earn <b>interest every round for doing nothing</b> (billionairism), so you have to ruin them faster than money flows uphill. the poorer they get, the less they earn — wound one and gravity does the rest.",
+  thPrice:"price", thChart:"chart", thHold:"you hold",
+  buy:"buy", max:"max", dump:"DUMP", newRun:"🗑️ new run", freePlay:"♾️ free play", dailyBtn:"📅 daily #{0}",
+  house:"house: ", lv:"lv.", maxLbl:"MAX", broke:"BROKE", seized:"(assets seized)",
+  perRound:"(+{0}/round for existing)",
+  bilTitle0:"crypto visionary (his dad bought it)", bilTitle1:"old money, older opinions",
+  bilTitle2:"owns all the water somehow", bilTitle3:"VC, \"pattern matcher\", 14 podcasts",
+  bilRule0:"📋 HIS WHOLE STRATEGY: sees YOU buy something → FOMO-buys it even harder next tick. especially if it's already expensive. \"it's going to the moon.\"",
+  bilRule1:"📋 HIS WHOLE STRATEGY: sees any price falling → buys the dip. the dip keeps dipping. he keeps buying. \"peasant panic, baron bargain.\"",
+  bilRule2:"📋 HIS WHOLE STRATEGY: keeps raising the price of his own Artisanal Water until literally nobody buys it and the bubble pops. every time.",
+  bilRule3:"📋 HER WHOLE STRATEGY: if ANY price crashes hard in one round → panic-sells EVERYTHING she owns. \"the market has spoken.\"",
+  asset0:"$HODL Coin", asset1:"Fine Art (banana, taped)", asset2:"Artisanal Water", asset3:"AI Startup Shares",
+  upgName0:"Burner Accounts", upgDesc0:"your trades move prices 50% harder. compounds. (this is the good one but you didn't hear it from us)",
+  upgName1:"Bigger Tote Bag", upgDesc1:"+10 carry capacity for every asset",
+  upgName2:"Sob Story GoFundMe", upgDesc2:"+$2 per round, passively. (honestly kind of mid)",
+  upgName3:"Leak The Group Chat", upgDesc3:"all billionaires act twice as hard. pure chaos. what could go wrong (for them)",
+  welcome:"welcome. four rich doodles, one market, zero regulation. their strategies are posted on their little cards because they cannot stop talking. drain all four — and hurry up about it, because they earn interest every round just for existing. money flows uphill until you dig a hole.",
+  welcomeBack:"⏰ welcome back. while you were gone, {0} rounds of unsupervised commerce occurred. the doodles remain terrible.",
+  catchup:"⏰ while you were gone, the doodles did {0} rounds of commerce without adult supervision.",
+  buyLog:"you buy {0} {1}. someone is watching you do this.",
+  dumpLog:"you DUMP {0} {1} for {2}. the chart looks like a cliff now.",
+  bankruptLog:"💀 {0} IS BANKRUPT. {1} logged off crying.",
+  gotOut:"you got out of {0} with {1} before the collapse. shameless.",
+  panicLog:"IVANA IS PANICKING. she sold it all. \"the market has spoken.\" everything is cheap now, by the way.",
+  popLog:"GRIMBLE'S WATER BUBBLE POPPED. he did this to himself. nobody helped. beautiful.",
+  toyLog:"{0} quietly sells the {1}. no one claps.",
+  upgLog:"purchased \"{0}\" ({1}). this is all perfectly legal probably.",
+  interestLog:"the interest compounds. somewhere, a doodle gets richer by doing nothing.",
+  chadLog:"Chadwick FOMO-buys {0}: \"this is financial advice.\"",
+  flavor0:"Chadwick paid $5 in gas fees to move $3.", flavor1:"The Baron bought another taped banana.",
+  flavor2:"Grimble bottled some rain. legal fees.", flavor3:"Ivana funded a startup that is just a guy.",
+  theyreBack:"🏆 THEY'RE BACK. {0}x richer, somehow dumber, and they \"learned nothing from last time.\" round {1}.",
+  whyDump:"bought your dump at the top.", whyAped:"aped into the top of {0}.", whyPanic:"panic-sold the entire portfolio at the bottom.",
+  whyKnife:"overpaid for a falling knife again.", whyPop:"his own water bubble popped. again.", whyMisc:"died of miscellaneous expenses.",
+  winTitle:"💸 WEALTH:<br>REDISTRIBUTED 💸",
+  dailyClear:"DAILY #{0} cleared in {1} rounds. order of ruin: {2}. now go make it everyone else's problem. new billionaires at midnight.",
+  freeClear:"all four of them: broke. it took you {0} rounds and zero real skills, just reading the rules they printed on their own foreheads. you have {1} and the moral high ground (debatable).",
+  shareBtn:"📋 copy bragging rights", copiedBtn:"✅ copied. go be insufferable.",
+  prestigeBtn:"they're back… and dumber ➜", playFreeBtn:"play free mode ➜",
+  confirmReset:"wipe your save and let the billionaires win? (they would want this)",
+  shareRounds:"💀💀💀💀 in {0} rounds", shareOrder:"order of ruin: ",
+  bMoon:"💎🙌 to the MOON", bFew:"few understand this", bSell:"😱 SELL EVERYTHING",
+  bBaron:"peasant panic, baron bargain 🧐", bWater:"💧📉 no… my water…", bGold:"water is the new gold 🤑",
+  crewPrompt:"crew word — everyone who enters the same word gets the same market. empty = solo daily.",
+  globalBtn:"🌍 global daily #{0}", groupBtn:"👯 play with your group", freeBtn:"♾️ free play (endless)", feedbackBtn:"💬 feedback",
+  kofiBtn:"☕ support the doodles"
+},
+es:{
+  sub:"un juego sobre cuatro doodles ricos y terribles y el bicho raro (tú) que los arruina. sus estrategias son públicas. ese es el problema (para ellos).",
+  dailySub:"📅 RETO DIARIO #{0} — el mercado de hoy: {1}. los mismos multimillonarios para todos. puntaje = rondas para arruinar a los cuatro.",
+  qChad:"Chadwick tiene MÁS fomo que nunca", qIvanaJumpy:"Ivana está extra nerviosa", qIvanaHard:"Ivana entra en pánico FUERTE",
+  qBaron:"el Barón paga de más como loco", qGrimble:"la burbuja de Grimble está extra frágil", qNormal:"el mercado se ve engañosamente normal",
+  marketH:"📉 El Mercado", upgradesH:"🛒 Mejoras Sospechosas", hintBtn:"¿cómo rompo esto?",
+  hint:"uno de ellos <b>copia tus compras</b> en el pico. una <b>vende todo en pánico</b> cuando algo cae fuerte. uno <b>compra cada caída</b>, para siempre. entonces: compra → deja que el copión lo infle → TÍRALO todo → pánico → todo barato → recompra. en cada vuelta, los cuatro quedan más pobres. la mejora \"Cuentas Fantasma\" hace que tus descargas peguen mucho más fuerte. además, el tipo del agua se arruina solo si lo dejas en paz. un detalle: ganan <b>intereses cada ronda por no hacer nada</b> (multimillonarismo), así que tienes que arruinarlos más rápido de lo que el dinero fluye cuesta arriba. cuanto más pobres, menos ganan — hiere a uno y la gravedad hace el resto.",
+  thPrice:"precio", thChart:"gráfica", thHold:"tienes",
+  buy:"comprar", max:"máx", dump:"TIRAR", newRun:"🗑️ otra partida", freePlay:"♾️ modo libre", dailyBtn:"📅 diario #{0}",
+  house:"casa: ", lv:"nv.", maxLbl:"MÁX", broke:"QUEBRADO", seized:"(bienes incautados)",
+  perRound:"(+{0}/ronda por existir)",
+  bilTitle0:"visionario cripto (se lo compró su papá)", bilTitle1:"dinero viejo, opiniones más viejas",
+  bilTitle2:"dueño de toda el agua, quién sabe cómo", bilTitle3:"VC, \"detecta patrones\", 14 pódcasts",
+  bilRule0:"📋 TODA SU ESTRATEGIA: te ve comprar algo → hace FOMO y compra aún más fuerte al turno siguiente. sobre todo si ya está caro. \"va a la luna.\"",
+  bilRule1:"📋 TODA SU ESTRATEGIA: ve un precio cayendo → compra la caída. la caída sigue cayendo. él sigue comprando. \"pánico plebeyo, ganga del barón.\"",
+  bilRule2:"📋 TODA SU ESTRATEGIA: sube el precio de su propia Agua Artesanal hasta que literalmente nadie la compra y la burbuja explota. cada vez.",
+  bilRule3:"📋 TODA SU ESTRATEGIA: si CUALQUIER precio se desploma fuerte en una ronda → vende TODO en pánico. \"el mercado ha hablado.\"",
+  asset0:"$HODL Coin", asset1:"Arte Fino (banana con cinta)", asset2:"Agua Artesanal", asset3:"Acciones de Startup de IA",
+  upgName0:"Cuentas Fantasma", upgDesc0:"tus operaciones mueven los precios 50% más fuerte. se acumula. (esta es la buena, pero no te lo dijimos nosotros)",
+  upgName1:"Bolsa Más Grande", upgDesc1:"+10 de capacidad para cada activo",
+  upgName2:"GoFundMe Lastimero", upgDesc2:"+$2 por ronda, pasivo. (la verdad, mediocre)",
+  upgName3:"Filtrar el Chat Grupal", upgDesc3:"todos los multimillonarios actúan el doble de fuerte. caos puro. qué podría salir mal (para ellos)",
+  welcome:"bienvenido. cuatro doodles ricos, un mercado, cero regulación. sus estrategias están publicadas en sus tarjetitas porque no pueden dejar de hablar. arruina a los cuatro — y apúrate, porque ganan intereses cada ronda solo por existir. el dinero fluye cuesta arriba hasta que caves un hoyo.",
+  welcomeBack:"⏰ bienvenido de vuelta. mientras no estabas, ocurrieron {0} rondas de comercio sin supervisión. los doodles siguen siendo terribles.",
+  catchup:"⏰ mientras no estabas, los doodles hicieron {0} rondas de comercio sin supervisión adulta.",
+  buyLog:"compras {0} {1}. alguien te está viendo hacer esto.",
+  dumpLog:"TIRAS {0} {1} por {2}. la gráfica ahora parece un acantilado.",
+  bankruptLog:"💀 {0} ESTÁ EN BANCARROTA. {1} se desconectó llorando.",
+  gotOut:"saliste de {0} con {1} antes del colapso. sinvergüenza.",
+  panicLog:"IVANA ESTÁ EN PÁNICO. lo vendió todo. \"el mercado ha hablado.\" por cierto, ahora todo está barato.",
+  popLog:"LA BURBUJA DE AGUA DE GRIMBLE EXPLOTÓ. se lo hizo él solito. nadie lo ayudó. hermoso.",
+  toyLog:"{0} vende discretamente el {1}. nadie aplaude.",
+  upgLog:"compraste \"{0}\" ({1}). todo esto es perfectamente legal, probablemente.",
+  interestLog:"el interés se acumula. en algún lugar, un doodle se hace más rico sin hacer nada.",
+  chadLog:"Chadwick compra {0} por FOMO: \"esto es consejo financiero.\"",
+  flavor0:"Chadwick pagó $5 en comisiones para mover $3.", flavor1:"El Barón compró otra banana con cinta.",
+  flavor2:"Grimble embotelló lluvia. gastos legales.", flavor3:"Ivana financió una startup que es solo un tipo.",
+  theyreBack:"🏆 VOLVIERON. {0}x más ricos, de alguna manera más tontos, y \"no aprendieron nada de la última vez.\" ronda {1}.",
+  whyDump:"compró tu descarga en el pico.", whyAped:"entró al pico de {0}.", whyPanic:"vendió todo el portafolio en el fondo.",
+  whyKnife:"pagó de más por otro cuchillo cayendo.", whyPop:"su propia burbuja de agua explotó. otra vez.", whyMisc:"murió de gastos misceláneos.",
+  winTitle:"💸 RIQUEZA:<br>REDISTRIBUIDA 💸",
+  dailyClear:"RETO #{0} superado en {1} rondas. orden de ruina: {2}. ahora ve a hacerlo problema de todos los demás. multimillonarios nuevos a medianoche.",
+  freeClear:"los cuatro: quebrados. te tomó {0} rondas y cero habilidades reales, solo leer las reglas que traen impresas en la frente. tienes {1} y la superioridad moral (debatible).",
+  shareBtn:"📋 copiar para presumir", copiedBtn:"✅ copiado. ve a ser insoportable.",
+  prestigeBtn:"volvieron… y más tontos ➜", playFreeBtn:"jugar modo libre ➜",
+  confirmReset:"¿borrar tu partida y dejar que ganen los multimillonarios? (ellos querrían esto)",
+  shareRounds:"💀💀💀💀 en {0} rondas", shareOrder:"orden de ruina: ",
+  bMoon:"💎🙌 a la LUNA", bFew:"pocos entienden esto", bSell:"😱 VENDER TODO",
+  bBaron:"pánico plebeyo, ganga del barón 🧐", bWater:"💧📉 no… mi agua…", bGold:"el agua es el nuevo oro 🤑",
+  crewPrompt:"palabra de equipo — todos los que escriban la misma palabra juegan el mismo mercado. vacío = diario en solitario.",
+  globalBtn:"🌍 diario global #{0}", groupBtn:"👯 jugar con tu grupo", freeBtn:"♾️ modo libre (infinito)", feedbackBtn:"💬 comentarios",
+  kofiBtn:"☕ apoya a los doodles"
+}
+};
+if(window.EXTRA_LANGS)Object.assign(LANGS,window.EXTRA_LANGS);
+const LANG_ORDER=Object.keys(LANGS);
+const LANG_NAMES=Object.assign({en:'English',es:'Español'},window.LANG_NAMES||{});
+let lang='en';
+try{
+  const nav=(navigator.language||'').slice(0,2).toLowerCase();
+  lang=localStorage.getItem('rtr-lang')||(LANGS[nav]?nav:'en');
+}catch(e){}
+if(!LANGS[lang])lang='en';
+document.documentElement.lang=lang;
+function t(k){
+  let s=(LANGS[lang]&&LANGS[lang][k])||LANGS.en[k]||k;
+  for(let i=1;i<arguments.length;i++)s=s.split('{'+(i-1)+'}').join(arguments[i]);
+  return s;
+}
+
+/* ---------- font scale ---------- */
+const FS_STEPS=[1,1.15,1.3,1.45];
+let fsIdx=0;
+try{ fsIdx=parseInt(localStorage.getItem('rtr-fs')||'0')||0; }catch(e){}
+function applyFS(){
+  document.documentElement.style.setProperty('--fs',FS_STEPS[fsIdx]);
+  document.getElementById('fontbtn').textContent='🔠 '+Math.round(FS_STEPS[fsIdx]*100)+'%';
+}
+
+/* ---------- doodle art ---------- */
+function svgWrap(inner){return '<svg class="doodle" aria-hidden="true" width="86" height="100" viewBox="0 0 60 70">'+inner+'</svg>';}
+const S='stroke="#2b2b2b" stroke-width="2.2" stroke-linecap="round" fill="none"';
+const doodles={
+  chad: svgWrap(
+    '<path d="M20,26 C18,16 26,11 31,12 C40,13 44,20 42,30 C41,44 43,52 36,56 C28,60 20,56 19,46 C18,38 21,32 20,26 Z" fill="#ffd9a0" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M17,17 C20,9 40,8 44,16 L45,20 L16,21 Z" fill="#e05252" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M44,16 L52,14" '+S+'/>'+
+    '<rect x="21" y="25" width="8" height="5" rx="2" fill="#2b2b2b"/><rect x="33" y="25" width="8" height="5" rx="2" fill="#2b2b2b"/><path d="M29,27 L33,27" '+S+'/>'+
+    '<path d="M27,38 C30,41 34,40 36,37" '+S+'/>'+
+    '<path d="M19,44 C12,42 8,36 10,30" '+S+'/><rect x="5" y="24" width="9" height="13" rx="2" fill="#9ad1ea" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M42,44 C48,46 51,42 50,38" '+S+'/>'+
+    '<path d="M27,58 L26,66 M35,58 L36,66" '+S+'/><path d="M22,66 L28,66 M33,66 L40,66" '+S+'/>'
+  ),
+  baron: svgWrap(
+    '<path d="M14,34 C12,22 22,16 30,16 C40,16 48,23 46,35 C45,48 40,56 30,56 C19,56 15,46 14,34 Z" fill="#cfe6f5" '+S.replace('fill="none"','')+'/>'+
+    '<rect x="19" y="4" width="22" height="12" rx="1" fill="#2b2b2b"/><rect x="14" y="14" width="32" height="4" rx="2" fill="#2b2b2b"/>'+
+    '<circle cx="23" cy="30" r="2.4" fill="#2b2b2b"/><circle cx="38" cy="30" r="5.5" '+S+'/><circle cx="38" cy="30" r="2.4" fill="#2b2b2b"/><path d="M43,34 L46,44" '+S+'/>'+
+    '<path d="M21,40 C25,36 35,36 39,40 C35,40 25,40 21,40 Z" fill="#2b2b2b"/>'+
+    '<path d="M25,46 C29,49 33,49 36,46" '+S+'/>'+
+    '<path d="M14,40 C8,42 6,48 9,52" '+S+'/><path d="M46,40 C52,42 54,48 51,52" '+S+'/>'+
+    '<path d="M26,56 L25,65 M34,56 L35,65" '+S+'/><path d="M21,65 L27,65 M32,65 L39,65" '+S+'/>'
+  ),
+  grimble: svgWrap(
+    '<path d="M8,40 C6,26 16,18 30,18 C44,18 54,26 52,40 C51,52 42,58 30,58 C18,58 9,52 8,40 Z" fill="#cde8c0" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M20,14 C22,8 26,8 27,13 M32,13 C33,7 37,7 38,14" '+S+'/>'+
+    '<circle cx="22" cy="34" r="2.6" fill="#2b2b2b"/><circle cx="38" cy="34" r="2.6" fill="#2b2b2b"/>'+
+    '<path d="M20,44 C24,49 36,49 40,44 L36,45 L32,44 L28,45 L24,44 Z" fill="#fff" '+S.replace('fill="none"','')+'/>'+
+    '<rect x="44" y="30" width="10" height="16" rx="3" fill="#b8e6f7" '+S.replace('fill="none"','')+'/><path d="M46,30 L46,27 L52,27 L52,30" '+S+'/>'+
+    '<path d="M8,44 C4,42 2,38 4,34" '+S+'/>'+
+    '<path d="M24,58 L23,66 M37,58 L38,66" '+S+'/><path d="M19,66 L25,66 M35,66 L42,66" '+S+'/>'
+  ),
+  ivana: svgWrap(
+    '<path d="M20,28 C19,18 24,13 30,13 C37,13 42,18 41,28 C40,36 37,40 30,40 C24,40 21,36 20,28 Z" fill="#ffd9c9" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M19,26 C16,14 26,8 31,9 C40,10 45,16 42,26 L41,20 C36,14 25,14 21,20 Z" fill="#7a4a2b" '+S.replace('fill="none"','')+'/>'+
+    '<circle cx="25" cy="27" r="2.2" fill="#2b2b2b"/><circle cx="35" cy="27" r="2.2" fill="#2b2b2b"/>'+
+    '<path d="M27,34 L34,34" '+S+'/>'+
+    '<path d="M18,44 C18,40 24,38 30,38 C36,38 42,40 42,44 L43,58 L17,58 Z" fill="#2b2b2b"/>'+
+    '<path d="M24,40 C26,43 34,43 36,40" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>'+
+    '<rect x="34" y="47" width="8" height="6" rx="1" fill="#fff"/><text x="35" y="52" font-size="5" font-family="monospace">AI</text>'+
+    '<path d="M17,48 C11,48 8,44 9,40" '+S+'/><path d="M43,48 C49,48 52,44 51,40" '+S+'/>'+
+    '<path d="M25,58 L24,66 M35,58 L36,66" '+S+'/><path d="M20,66 L26,66 M33,66 L40,66" '+S+'/>'
+  )
+};
+
+/* ---------- game state ---------- */
+const START_WORTH=2500, START_CASH=50, SAVE_KEY='rtr-save-v1';
+let cash=START_CASH, prestige=0, chaos=1, tickN=0, playerLast=null, ivanaCool=0, won=false, muted=false;
+
+const TOYS=[['🚀','🛥️','🦍'],['🏰','🐎','🍌'],['🏝️','⛲','💎'],['🤖','✈️','🎙️']];
+const bils=[
+  {key:'chad', name:'Chadwick Coyne III', worth:START_WORTH, alive:true, toys:TOYS[0].slice()},
+  {key:'baron', name:'Baron Reginald Von Yachtsworth', worth:START_WORTH, alive:true, toys:TOYS[1].slice()},
+  {key:'grimble', name:'Grimble Hoardington', worth:START_WORTH, alive:true, toys:TOYS[2].slice()},
+  {key:'ivana', name:'Ivana Disrupt', worth:START_WORTH, alive:true, toys:TOYS[3].slice()}
+];
+const assets=[
+  {emoji:'🪙', price:8,  base:8,  held:0, owner:0},
+  {emoji:'🍌', price:20, base:20, held:0, owner:1},
+  {emoji:'💧', price:5,  base:5,  held:0, owner:2},
+  {emoji:'🤖', price:12, base:12, held:0, owner:3}
+];
+assets.forEach(a=>{a.hist=[a.price]; a.lastTick=a.price;});
+
+const upgrades=[
+  {lvl:0, cost:l=>Math.round(30*Math.pow(3,l)), max:8},
+  {lvl:0, cost:l=>Math.round(50*Math.pow(2,l)), max:10},
+  {lvl:0, cost:l=>Math.round(20*Math.pow(2,l)), max:15},
+  {lvl:0, cost:l=>Math.round(150*Math.pow(4,l)), max:4}
+];
+let baseCap=10;
+const cap=()=>baseCap+upgrades[1].lvl*10;
+const impact=()=>0.035*Math.pow(1.5,upgrades[0].lvl);
+const chaosMult=()=>chaos*(1+upgrades[3].lvl);
+
+/* ---------- daily challenge: seeded randomness & modes ---------- */
+const DAY=Math.floor(Date.now()/86400000), PUZZLE=DAY-20654; // #1 = July 21 2026
+let mode='daily';
+try{ mode=localStorage.getItem('rtr-mode')||'daily'; }catch(e){}
+// crew mode: same word = same market. group play with zero servers.
+let crew='';
+try{ crew=(localStorage.getItem('rtr-crew')||'').trim(); }catch(e){}
+function hashStr(s){
+  let h=2166136261>>>0;
+  for(let i=0;i<s.length;i++){ h=(h^s.charCodeAt(i))>>>0; h=Math.imul(h,16777619)>>>0; }
+  return h>>>0;
+}
+const CREW_H=crew?hashStr(crew.toLowerCase()):0;
+const SEED_BASE=(DAY+CREW_H)>>>0;
+const KEY=(mode==='daily')?('rtr-daily-'+DAY+(crew?'-'+CREW_H:'')):SAVE_KEY;
+let bankruptOrder=[];
+
+function RNG(seed){ this.s=seed>>>0; }
+RNG.prototype.next=function(){
+  this.s=(this.s+0x6D2B79F5)>>>0; let t=this.s;
+  t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61);
+  return ((t^t>>>14)>>>0)/4294967296;
+};
+// gameplay randomness: seeded in daily mode so everyone plays the same market.
+// cosmetic randomness (bubbles, confetti, log flavor odds) stays Math.random.
+let rng=new RNG(mode==='daily'?((SEED_BASE*7919)>>>0):((Date.now()%2147483647)>>>0));
+const R=()=>rng.next();
+
+// today's quirks: deterministic from the date, identical for every player
+const P=(function(){
+  if(mode!=='daily')return {startCash:50, chadPump:0.12, baronCost:12, grimbleCap:3.2, ivanaThresh:0.18, ivanaDmg:0.08, priceMult:[1,1,1,1]};
+  const d=new RNG(SEED_BASE);
+  return {
+    startCash:40+Math.floor(d.next()*21),
+    chadPump:0.10+d.next()*0.06,
+    baronCost:10+d.next()*6,
+    grimbleCap:2.8+d.next()*0.8,
+    ivanaThresh:0.15+d.next()*0.06,
+    ivanaDmg:0.06+d.next()*0.04,
+    priceMult:[0,1,2,3].map(()=>0.7+d.next()*0.8)
+  };
+})();
+function quirkLine(){
+  const qs=[];
+  if(P.chadPump>0.14)qs.push(t('qChad'));
+  if(P.ivanaThresh<0.165)qs.push(t('qIvanaJumpy'));
+  if(P.ivanaDmg>0.085)qs.push(t('qIvanaHard'));
+  if(P.baronCost>14)qs.push(t('qBaron'));
+  if(P.grimbleCap<3.0)qs.push(t('qGrimble'));
+  if(qs.length===0)qs.push(t('qNormal'));
+  return qs.join(' · ');
+}
+function shareText(){
+  return 'RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'')+'\n'+t('shareRounds',tickN)+'\n'+t('shareOrder')+bankruptOrder.join('→');
+}
+
+/* ---------- save / load ---------- */
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify({
+      v:1, t:Date.now(), cash, prestige, chaos, tickN, ivanaCool, muted,
+      rngS:rng.s, order:bankruptOrder,
+      bils:bils.map(b=>({worth:b.worth, alive:b.alive, toys:b.toys})),
+      assets:assets.map(a=>({price:a.price, held:a.held, hist:a.hist, lastTick:a.lastTick})),
+      upg:upgrades.map(u=>u.lvl)
+    }));
+  }catch(e){}
+}
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY));
+    if(!s||s.v!==1)return 0;
+    cash=s.cash; prestige=s.prestige||0; chaos=s.chaos||1; tickN=s.tickN||0;
+    ivanaCool=s.ivanaCool||0; muted=!!s.muted;
+    if(s.rngS)rng.s=s.rngS; bankruptOrder=s.order||[];
+    s.bils.forEach((x,i)=>{ bils[i].worth=x.worth; bils[i].alive=x.alive; bils[i].toys=x.toys||[]; });
+    s.assets.forEach((x,i)=>{ assets[i].price=x.price; assets[i].held=x.held; assets[i].hist=x.hist||[x.price]; assets[i].lastTick=x.lastTick||x.price; });
+    (s.upg||[]).forEach((l,i)=>{ if(upgrades[i])upgrades[i].lvl=l; });
+    return s.t||0;
+  }catch(e){ return 0; }
+}
+
+/* ---------- sound ---------- */
+let AC=null;
+function blip(freq,dur,type,gain){
+  if(muted)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(), g=AC.createGain();
+    o.type=type||'square'; o.frequency.value=freq;
+    g.gain.value=gain||0.035;
+    o.connect(g); g.connect(AC.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime+dur);
+    o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+const sfxBuy=()=>blip(520,0.07);
+const sfxDump=()=>{blip(300,0.1,'sawtooth'); setTimeout(()=>blip(210,0.14,'sawtooth'),70);};
+const sfxBankrupt=()=>[392,330,262,175].forEach((f,i)=>setTimeout(()=>blip(f,0.2,'triangle',0.05),i*150));
+const sfxWin=()=>[262,330,392,523,659].forEach((f,i)=>setTimeout(()=>blip(f,0.22,'triangle',0.05),i*130));
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const fmt=n=>'$'+Math.round(n).toLocaleString();
+const clampP=p=>Math.min(9999,Math.max(0.5,p));
+function log(msg,big){
+  const d=document.createElement('div'); if(big)d.className='big';
+  d.textContent='• '+msg; const l=$('log'); l.prepend(d);
+  while(l.children.length>40)l.removeChild(l.lastChild);
+}
+function floaty(txt,good){
+  const s=document.createElement('div');
+  s.className='floaty '+(good?'good':'bad');
+  s.textContent=txt;
+  s.style.left=(15+Math.random()*45)+'%';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1400);
+}
+function bubble(i,txt){
+  const el=document.querySelector('#bil'+i+' .bubble'); if(!el)return;
+  el.textContent=txt; el.classList.add('show');
+  const card=$('bil'+i); card.classList.remove('hop'); void card.offsetWidth; card.classList.add('hop');
+  setTimeout(()=>el.classList.remove('show'),1600);
+}
+function drain(i,amt,why){
+  const b=bils[i]; if(!b.alive)return;
+  b.worth-=amt;
+  if(b.worth<=0){
+    b.worth=0; b.alive=false;
+    bankruptOrder.push(['🪙','🍌','💧','🤖'][i]);
+    log(t('bankruptLog',b.name.toUpperCase(),why),true);
+    floaty('💀',true); sfxBankrupt();
+    const a=assets.find(x=>x.owner===i);
+    if(a&&a.held>0){ cash+=a.held*a.price; log(t('gotOut',t('asset'+assets.indexOf(a)),fmt(a.held*a.price))); a.held=0; }
+    checkWin();
+  }
+}
+function enrich(i,amt){ const b=bils[i]; if(b.alive)b.worth+=amt; }
+
+/* ---------- player actions ---------- */
+function buy(i,max){
+  const a=assets[i], b=bils[a.owner]; if(!b.alive||won)return;
+  let n=0;
+  do{
+    if(cash<a.price||a.held>=cap())break;
+    cash-=a.price; enrich(a.owner,a.price); a.held++;
+    a.price=clampP(a.price*(1+impact())); n++;
+  }while(max);
+  if(n>0){ playerLast={type:'buy',asset:i,qty:n}; sfxBuy(); log(t('buyLog',n,t('asset'+i))); render(); }
+}
+function dump(i){
+  const a=assets[i], b=bils[a.owner]; if(!b.alive||won)return;
+  if(a.held===0)return;
+  let got=0, n=a.held;
+  while(a.held>0){
+    a.held--;
+    const paid=a.price;
+    got+=paid;
+    a.price=clampP(a.price*(1-impact()));
+    drain(a.owner,paid,t('whyDump'));
+  }
+  cash+=got;
+  playerLast={type:'sell',asset:i,qty:n};
+  sfxDump(); floaty('+'+fmt(got),true);
+  log(t('dumpLog',n,t('asset'+i),fmt(got)));
+  render();
+}
+
+/* ---------- billionaire brains ---------- */
+function tick(silent){
+  tickN++;
+  cash+=upgrades[2].lvl*2;
+  const cm=chaosMult();
+  const bq=[]; // bubbles queued until after render, so render doesn't wipe them
+
+  // BILLIONAIRISM: they passively earn interest just for existing.
+  // rich = earns a lot. wounded = earns crumbs. that's your opening.
+  const W=START_WORTH*Math.pow(8,prestige); // scale losses with prestige wealth
+  const capW=W*2;
+  bils.forEach(b=>{
+    if(b.alive&&b.worth<capW)b.worth=Math.min(capW,b.worth*1.003+1);
+  });
+  if(!silent&&Math.random()<0.04)log(t('interestLog'));
+
+  // snapshot: which prices fell hard since last tick (player dumps included)
+  const crashes=assets.map(a=>a.lastTick>0 && a.price < a.lastTick*(1-P.ivanaThresh));
+  const dips=assets.map(a=>a.price<a.lastTick);
+
+  // CHADWICK: copies your buys, at the top
+  if(bils[0].alive && playerLast && playerLast.type==='buy'){
+    const a=assets[playerLast.asset];
+    if(bils[a.owner].alive){
+      a.price=clampP(a.price*(1+P.chadPump*cm));
+      const hist=a.hist.slice(-15), avg=hist.reduce((s,x)=>s+x,0)/hist.length;
+      if(a.price>avg*1.1){ drain(0,W*0.008*cm,t('whyAped',t('asset'+playerLast.asset))); if(!silent)bq.push([0,t('bMoon')]); }
+      else if(!silent)bq.push([0,t('bFew')]);
+      if(!silent&&Math.random()<0.4)log(t('chadLog',t('asset'+playerLast.asset)));
+    }
+    playerLast=null;
+  } else if(playerLast&&playerLast.type==='sell'){ playerLast=null; }
+
+  // IVANA: panic
+  if(ivanaCool>0)ivanaCool--;
+  if(bils[3].alive && ivanaCool===0 && crashes.some(c=>c)){
+    assets.forEach(a=>{a.price=clampP(a.price*(1-0.14*cm));});
+    drain(3,W*P.ivanaDmg*cm,t('whyPanic'));
+    ivanaCool=8;
+    if(!silent){bq.push([3,t('bSell')]); log(t('panicLog'),true);}
+  }
+
+  // BARON: buys every dip
+  if(bils[1].alive){
+    let bought=false;
+    assets.forEach((a,i)=>{
+      if(dips[i]&&R()<0.8){
+        a.price=clampP(a.price*(1+0.05*cm));
+        drain(1,W*(P.baronCost/2500)*cm,t('whyKnife'));
+        bought=true;
+      }
+    });
+    if(bought&&!silent&&Math.random()<0.5)bq.push([1,t('bBaron')]);
+  }
+
+  // GRIMBLE: self-inflating water bubble
+  if(bils[2].alive){
+    const w=assets[2];
+    w.price=clampP(w.price*(1+0.09*cm));
+    if(w.price>w.base*P.grimbleCap){
+      w.price=w.base*(0.8+R()*0.4);
+      drain(2,W*0.12*cm,t('whyPop'));
+      if(!silent){bq.push([2,t('bWater')]); log(t('popLog'),true);}
+    } else if(!silent&&Math.random()<0.15)bq.push([2,t('bGold')]);
+  }
+
+  // gentle drift + flavor losses
+  assets.forEach(a=>{ a.price=clampP(a.price*(1+(R()-0.5)*0.04)); });
+  if(R()<0.12){
+    const fl=[[0,5],[1,8],[2,4],[3,6]];
+    const fi=Math.floor(R()*fl.length), f=fl[fi];
+    if(bils[f[0]].alive){ drain(f[0],f[1]*(W/2500),t('whyMisc')); if(!silent&&Math.random()<0.5)log(t('flavor'+fi)); }
+  }
+
+  // toy repossession
+  bils.forEach((b,i)=>{
+    const pct=b.worth/(START_WORTH*Math.pow(8,prestige));
+    const should=pct>0.75?3:pct>0.5?2:pct>0.25?1:0;
+    if(b.alive&&b.toys.length>should){
+      const toy=b.toys.pop();
+      if(!silent)log(t('toyLog',b.name.split(' ')[0],toy));
+    }
+  });
+
+  assets.forEach(a=>{ a.lastTick=a.price; a.hist.push(a.price); if(a.hist.length>30)a.hist.shift(); });
+  if(!silent){ render(); bq.forEach(x=>bubble(x[0],x[1])); }
+  if(tickN%5===0)save();
+}
+
+/* ---------- win / prestige ---------- */
+function checkWin(){
+  if(won)return;
+  if(bils.every(b=>!b.alive)){
+    won=true; sfxWin();
+    if(mode==='daily'){
+      $('overlaytext').textContent=t('dailyClear',PUZZLE,tickN,bankruptOrder.join('→'));
+      $('sharebtn').style.display='inline-block';
+      $('sharebtn').textContent=t('shareBtn');
+      $('prestige').textContent=t('playFreeBtn');
+    }else{
+      $('overlaytext').textContent=t('freeClear',tickN,fmt(cash));
+    }
+    const ov=$('overlay'); ov.classList.add('show');
+    for(let i=0;i<14;i++){
+      const c=document.createElement('div'); c.className='confetti';
+      c.textContent=['💸','🏚️','📉','🍌','💧','⛵'][i%6];
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.animationDuration=(2.5+Math.random()*3)+'s';
+      c.style.animationDelay=(Math.random()*2)+'s';
+      ov.appendChild(c);
+    }
+    if(KOFI_URL){
+      const k=$('kofi2');
+      k.href=KOFI_URL; k.textContent=t('kofiBtn'); k.style.display='inline-block';
+    }
+    save();
+    setTimeout(()=>{ (mode==='daily'?$('sharebtn'):$('prestige')).focus(); },150);
+  }
+}
+$('sharebtn').onclick=()=>{
+  const txt=shareText();
+  if(navigator.share){ navigator.share({text:txt}).catch(()=>{}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(txt).catch(()=>{}); }
+  $('sharebtn').textContent=t('copiedBtn');
+};
+$('prestige').onclick=()=>{
+  if(mode==='daily'){
+    try{localStorage.setItem('rtr-mode','free');}catch(e){}
+    location.reload(); return;
+  }
+  prestige++; chaos*=1.25; won=false; tickN=0; bankruptOrder=[];
+  bils.forEach((b,i)=>{ b.worth=START_WORTH*Math.pow(8,prestige); b.alive=true; b.toys=TOYS[i].slice(); });
+  assets.forEach(a=>{ a.price=a.base*(0.8+Math.random()*0.6); a.hist=[a.price]; a.lastTick=a.price; a.held=0; });
+  $('overlay').classList.remove('show');
+  document.querySelectorAll('.confetti').forEach(c=>c.remove());
+  log(t('theyreBack',Math.pow(8,prestige),prestige+1),true);
+  save(); render();
+};
+
+/* ---------- rendering ---------- */
+function spark(a){
+  const h=a.hist, min=Math.min(...h), max=Math.max(...h), r=(max-min)||1;
+  const pts=h.map((p,i)=>((i/(h.length-1||1))*70).toFixed(1)+','+(20-((p-min)/r)*18+2).toFixed(1)).join(' ');
+  const up=h[h.length-1]>=h[0];
+  return '<svg class="spark" width="72" height="24"><polyline points="'+pts+'" fill="none" stroke="'+(up?'#4a9e5c':'#e05252')+'" stroke-width="2"/></svg>';
+}
+function renderBils(){
+  $('bils').innerHTML=bils.map((b,i)=>{
+    const full=START_WORTH*Math.pow(8,prestige);
+    const pct=Math.max(0,Math.min(100,(b.worth/full)*100));
+    return '<div class="bil'+(b.alive?'':' dead')+'" id="bil'+i+'">'
+      +'<div class="bubble"></div>'
+      +doodles[b.key]
+      +'<div class="name">'+b.name+(b.alive?'':' 💀')+'</div>'
+      +'<div class="title">'+t('bilTitle'+i)+'</div>'
+      +'<div class="toys">'+(b.alive?b.toys.join(' '):t('seized'))+'</div>'
+      +'<div class="worthwrap"><div class="worthbar" style="width:'+pct+'%; background:'+(pct>50?'#4a9e5c':pct>25?'#d9a441':'#e05252')+'"></div></div>'
+      +'<div class="worthtxt">'+(b.alive?fmt(b.worth)+' <small>'+t('perRound',fmt(b.worth*0.003+1))+'</small>':t('broke'))+'</div>'
+      +'<div class="rule">'+t('bilRule'+i)+'</div>'
+      +'</div>';
+  }).join('');
+}
+function renderMarket(){
+  $('market').innerHTML='<tr><th></th><th>'+t('thPrice')+'</th><th>'+t('thChart')+'</th><th>'+t('thHold')+'</th><th></th></tr>'
+    +assets.map((a,i)=>{
+      const b=bils[a.owner], dead=!b.alive;
+      const dir=a.hist.length>1?(a.price>=a.hist[a.hist.length-2]?'up':'down'):'up';
+      return '<tr>'
+        +'<td>'+a.emoji+' <b>'+t('asset'+i)+'</b><br><small style="opacity:.6">'+t('house')+b.name.split(' ')[0]+(dead?' 💀':'')+'</small></td>'
+        +'<td class="price '+dir+'">'+(dead?'—':((dir==='up'?'▲ ':'▼ ')+fmt(a.price)))+'</td>'
+        +'<td>'+spark(a)+'</td>'
+        +'<td>'+a.held+'/'+cap()+'</td>'
+        +'<td><button id="buy'+i+'" onclick="buy('+i+',false)" '+(dead||cash<a.price||a.held>=cap()?'disabled':'')+'>'+t('buy')+'</button>'
+        +'<button id="mx'+i+'" onclick="buy('+i+',true)" '+(dead||cash<a.price||a.held>=cap()?'disabled':'')+'>'+t('max')+'</button>'
+        +'<button id="dp'+i+'" class="dump" onclick="dump('+i+')" '+(dead||a.held===0?'disabled':'')+'>'+t('dump')+'</button></td>'
+        +'</tr>';
+    }).join('');
+}
+function renderUpgrades(){
+  $('upgrades').innerHTML=upgrades.map((u,i)=>{
+    const maxed=u.lvl>=u.max, c=u.cost(u.lvl);
+    return '<div class="upg"><div><b>'+t('upgName'+i)+'</b> <small>'+t('lv')+u.lvl+'</small><small>'+t('upgDesc'+i)+'</small></div>'
+      +'<button id="ug'+i+'" onclick="buyUpg('+i+')" '+(maxed||cash<c?'disabled':'')+'>'+(maxed?t('maxLbl'):fmt(c))+'</button></div>';
+  }).join('');
+}
+function buyUpg(i){
+  const u=upgrades[i], c=u.cost(u.lvl);
+  if(cash<c||u.lvl>=u.max)return;
+  cash-=c; u.lvl++;
+  floaty('-'+fmt(c),false); sfxBuy();
+  log(t('upgLog',t('upgName'+i),t('lv')+u.lvl));
+  render();
+}
+function render(){
+  // remember focus: the UI re-renders every tick, which would otherwise
+  // knock keyboard/gamepad focus loose mid-navigation
+  const focusId=(document.activeElement&&document.activeElement.id)||null;
+  $('cash').textContent=fmt(cash).slice(1);
+  $('badges').textContent='🏆'.repeat(prestige);
+  renderBils(); renderMarket(); renderUpgrades();
+  if(focusId){ const el=$(focusId); if(el&&!el.disabled)el.focus(); }
+  save();
+}
+window.buy=buy; window.dump=dump; window.buyUpg=buyUpg;
+
+/* ---------- static chrome (language-aware) ---------- */
+function applyLang(){
+  $('marketH').textContent=t('marketH');
+  $('upgradesH').textContent=t('upgradesH');
+  $('hintbtn').textContent=t('hintBtn');
+  $('hint').innerHTML=t('hint');
+  $('winTitle').innerHTML=t('winTitle');
+  $('resetbtn').textContent=t('newRun');
+  $('prestige').textContent=(mode==='daily'&&won)?t('playFreeBtn'):t('prestigeBtn');
+  $('sharebtn').textContent=t('shareBtn');
+  $('modebtn').textContent=(mode==='daily')?t('freePlay'):t('dailyBtn',PUZZLE);
+  const sel=$('langsel');
+  if(sel.options.length!==LANG_ORDER.length){
+    sel.innerHTML=LANG_ORDER.map(c=>'<option value="'+c+'">'+(LANG_NAMES[c]||c)+'</option>').join('');
+  }
+  sel.value=lang;
+  document.documentElement.dir=(lang==='ar')?'rtl':'ltr';
+  $('crewbtn').style.display=(mode==='daily')?'':'none';
+  $('crewbtn').textContent=crew?('👯 '+crew):'👯';
+  $('crewbtn').setAttribute('aria-label','crew mode');
+  $('fbbtn').textContent=t('feedbackBtn');
+  $('fontbtn').setAttribute('aria-label','text size');
+  $('homebtn').setAttribute('role','button');
+  $('homebtn').setAttribute('tabindex','0');
+  $('subline').textContent=(mode==='daily')?(t('dailySub',PUZZLE,quirkLine())+(crew?' · 👯 '+crew:'')):t('sub');
+}
+
+$('hintbtn').onclick=()=>$('hint').classList.toggle('show');
+$('mutebtn').onclick=()=>{ muted=!muted; $('mutebtn').textContent=muted?'🔇':'🔊'; save(); };
+$('fontbtn').onclick=()=>{
+  fsIdx=(fsIdx+1)%FS_STEPS.length;
+  try{localStorage.setItem('rtr-fs',String(fsIdx));}catch(e){}
+  applyFS();
+};
+$('langsel').onchange=e=>{
+  const next=e.target.value;
+  try{localStorage.setItem('rtr-lang',next);}catch(e2){}
+  lang=next; document.documentElement.lang=lang;
+  applyLang(); render();
+};
+$('crewbtn').onclick=()=>{
+  const w=prompt(t('crewPrompt'),crew);
+  if(w===null)return;
+  save();
+  try{localStorage.setItem('rtr-crew',w.trim());}catch(e2){}
+  location.reload();
+};
+$('resetbtn').onclick=()=>{
+  if(confirm(t('confirmReset'))){
+    try{localStorage.removeItem(KEY);}catch(e){}
+    location.reload();
+  }
+};
+$('modebtn').onclick=()=>{
+  save();
+  try{localStorage.setItem('rtr-mode',mode==='daily'?'free':'daily');}catch(e){}
+  location.reload();
+};
+$('homebtn').onclick=()=>{
+  save();
+  try{sessionStorage.removeItem('rtr-in');}catch(e){}
+  location.reload();
+};
+$('homebtn').onkeydown=e=>{ if(e.key==='Enter'||e.key===' ')$('homebtn').onclick(); };
+function sendFeedback(){
+  const meta='RUIN THE RICH · '+mode+(crew?'/'+crew:'')+' · '+lang+' · daily #'+PUZZLE+' · round '+tickN;
+  const msg=prompt(t('feedbackBtn'),'');
+  if(msg===null)return;
+  const full='RUIN THE RICH feedback\n\n'+msg+'\n\n---\n'+meta;
+  let copied=false;
+  try{ if(navigator.clipboard){ navigator.clipboard.writeText(full); copied=true; } }catch(e){}
+  // try mailto too, for people who do have an email app
+  const a=document.createElement('a');
+  a.href='mailto:dameoffensive@gmail.com?subject='+encodeURIComponent('RUIN THE RICH feedback')+'&body='+encodeURIComponent(msg+'\n\n---\n'+meta);
+  document.body.appendChild(a); a.click(); a.remove();
+  alert(copied
+    ?'📋 copied! if no email app opened, just paste it in a message to dameoffensive@gmail.com'
+    :'send it to dameoffensive@gmail.com');
+}
+$('fbbtn').onclick=sendFeedback;
+window.addEventListener('beforeunload',save);
+
+/* ---------- gamepad support ----------
+   d-pad / left stick moves focus, A presses, B closes the win screen. */
+(function(){
+  let prev={};
+  function focusables(){
+    return Array.from(document.querySelectorAll('button,select'))
+      .filter(el=>el.offsetParent!==null&&!el.disabled);
+  }
+  function move(dir){
+    const els=focusables(); if(!els.length)return;
+    let i=els.indexOf(document.activeElement);
+    i=(i<0)?0:(i+dir+els.length)%els.length;
+    els[i].focus();
+    els[i].scrollIntoView({block:'nearest'});
+  }
+  const pr=(gp,i)=>!!(gp.buttons[i]&&gp.buttons[i].pressed);
+  setInterval(()=>{
+    const gps=navigator.getGamepads?navigator.getGamepads():[];
+    let gp=null;
+    for(let i=0;i<gps.length;i++){ if(gps[i]){gp=gps[i];break;} }
+    if(!gp)return;
+    const ax=gp.axes[0]||0, ay=gp.axes[1]||0;
+    const st={
+      fwd: pr(gp,15)||pr(gp,13)||ax>0.6||ay>0.6,
+      back:pr(gp,14)||pr(gp,12)||ax<-0.6||ay<-0.6,
+      a:pr(gp,0), b:pr(gp,1)
+    };
+    if(st.fwd&&!prev.fwd)move(1);
+    if(st.back&&!prev.back)move(-1);
+    if(st.a&&!prev.a&&document.activeElement&&document.activeElement.click)document.activeElement.click();
+    if(st.b&&!prev.b&&$('overlay').classList.contains('show'))$('prestige').click();
+    prev=st;
+  },120);
+})();
+
+/* ---------- boot ---------- */
+applyFS();
+
+function bootGame(){
+  $('start').style.display='none';
+  // sweep expired daily saves
+  try{
+    for(let k=localStorage.length-1;k>=0;k--){
+      const key=localStorage.key(k);
+      if(key&&key.indexOf('rtr-daily-')===0&&key.split('-')[2]!==String(DAY))localStorage.removeItem(key);
+    }
+  }catch(e){}
+  applyLang();
+  const savedAt=load();
+  $('mutebtn').textContent=muted?'🔇':'🔊';
+  if(!savedAt&&mode==='daily'){
+    cash=P.startCash;
+    assets.forEach((a,i)=>{ a.price=Math.round(a.base*P.priceMult[i]*10)/10; a.hist=[a.price]; a.lastTick=a.price; });
+  }
+  if(savedAt){
+    const missed=Math.min(Math.floor((Date.now()-savedAt)/2000),1000);
+    for(let k=0;k<missed;k++)tick(true);
+    log(t('welcomeBack',missed),true);
+    if(bils.every(b=>!b.alive)){ won=false; checkWin(); }
+  }else{
+    log(t('welcome'),true);
+  }
+  render();
+
+  // clock (lazy-friendly: catches up while you were gone)
+  let lastTick=Date.now();
+  setInterval(()=>{
+    const now=Date.now();
+    let n=Math.floor((now-lastTick)/2000);
+    if(n<=0)return;
+    lastTick+=n*2000;
+    if(n>2){
+      const runs=Math.min(n,400);
+      for(let k=0;k<runs;k++)tick(true);
+      log(t('catchup',runs),true);
+      render();
+    } else {
+      while(n-->0)tick(false);
+    }
+  },1000);
+}
+
+/* ---------- start screen ---------- */
+function applyStart(){
+  $('startsub').textContent=t('sub');
+  $('btnGlobal').textContent=t('globalBtn',PUZZLE);
+  $('btnGroup').textContent=t('groupBtn')+(crew?' — 👯 '+crew:'');
+  $('btnFree').textContent=t('freeBtn');
+  $('fbbtn2').textContent=t('feedbackBtn');
+  if(KOFI_URL){
+    const k=$('kofi1');
+    k.href=KOFI_URL; k.textContent=t('kofiBtn'); k.style.display='inline-block';
+  }
+  document.documentElement.dir=(lang==='ar')?'rtl':'ltr';
+}
+function enter(newMode,newCrew){
+  try{
+    localStorage.setItem('rtr-mode',newMode);
+    localStorage.setItem('rtr-crew',newCrew);
+    sessionStorage.setItem('rtr-in','1');
+  }catch(e){}
+  location.reload();
+}
+function initStart(){
+  $('startdoodles').innerHTML=doodles.chad+doodles.baron+doodles.grimble+doodles.ivana;
+  const sel=$('startlang');
+  sel.innerHTML=LANG_ORDER.map(c=>'<option value="'+c+'">'+(LANG_NAMES[c]||c)+'</option>').join('');
+  sel.value=lang;
+  sel.onchange=e=>{
+    lang=e.target.value;
+    try{localStorage.setItem('rtr-lang',lang);}catch(e2){}
+    document.documentElement.lang=lang;
+    applyStart();
+  };
+  $('btnGlobal').onclick=()=>enter('daily','');
+  $('btnFree').onclick=()=>enter('free',crew);
+  $('btnGroup').onclick=()=>{
+    const w=prompt(t('crewPrompt'),crew);
+    if(w===null)return;
+    enter('daily',w.trim());
+  };
+  $('fbbtn2').onclick=sendFeedback;
+  applyStart();
+}
+
+/* support link: shown on the title screen and win screen. empty = hidden. */
+const KOFI_URL='https://ko-fi.com/dameoffensive';
+/* beta lock: put a word between the quotes to password-protect this build.
+   leave empty ('') for public play. asked once per browser session. */
+const BETA_CODE='http://youtube.com/dameoffensive';
+let allowed=true;
+if(BETA_CODE){
+  let ok=false;
+  try{ ok=sessionStorage.getItem('rtr-beta')==='1'; }catch(e){}
+  if(!ok){
+    const pw=prompt('🔒 beta password:');
+    if(pw===BETA_CODE){ try{sessionStorage.setItem('rtr-beta','1');}catch(e){} }
+    else{ allowed=false; document.body.innerHTML='<h1 style="text-align:center;margin-top:20vh">🔒 the billionaires bought this door.</h1>'; }
+  }
+}
+if(allowed){
+  let entered=false;
+  try{ entered=sessionStorage.getItem('rtr-in')==='1'; }catch(e){}
+  if(entered){ bootGame(); }
+  else{ initStart(); }
+}
+
+/* ---------- PWA ---------- */
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
