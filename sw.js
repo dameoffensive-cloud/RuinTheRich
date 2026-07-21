@@ -1,4 +1,4 @@
-const CACHE = 'rtr-v12';
+const CACHE = 'rtr-v15';
 const FILES = ['./', './index.html', './langs.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {

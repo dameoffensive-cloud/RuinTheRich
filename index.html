@@ -181,6 +181,8 @@
   <div class="cash">💵 <span id="cash">0</span></div>
   <div class="badges" id="badges"></div>
   <div class="sysbtns">
+    <button id="sharetop" style="display:none">📋</button>
+    <a id="kofi3" class="btnlike" style="display:none" target="_blank" rel="noopener" title="support the doodles">☕</a>
     <select id="langsel" title="language"></select>
     <button id="crewbtn" title="crew mode: shared market with friends">👯</button>
     <button id="fontbtn" title="text size">🔠</button>
@@ -497,11 +499,18 @@ function bumpStreak(){
 }
 function shareText(){
   const s=getStreak();
-  return 'RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'')
-    +'\n'+t('shareRounds',tickN)
-    +'\n'+t('shareOrder')+bankruptOrder.join('→')
-    +(s.n>=2?'\n🔥 '+s.n:'')
-    +'\n'+GAME_URL;
+  const dead=bils.filter(b=>!b.alive).length;
+  const head='RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'');
+  let body;
+  if(dead===4){
+    body='\n'+t('shareRounds',tickN)
+        +'\n'+t('shareOrder')+bankruptOrder.join('→');
+  }else{
+    // partial run: skulls for the ruined, squares for the survivors, ⏳ round
+    body='\n'+'💀'.repeat(dead)+'⬜'.repeat(4-dead)+' ⏳ '+tickN
+        +(bankruptOrder.length?'\n'+t('shareOrder')+bankruptOrder.join('→'):'');
+  }
+  return head+body+(s.n>=2?'\n🔥 '+s.n:'')+'\n'+GAME_URL;
 }
 
 /* ---------- save / load ---------- */
@@ -738,12 +747,15 @@ function checkWin(){
     setTimeout(()=>{ (mode==='daily'?$('sharebtn'):$('prestige')).focus(); },150);
   }
 }
-$('sharebtn').onclick=()=>{
+function doShare(btn){
   const txt=shareText();
   if(navigator.share){ navigator.share({text:txt}).catch(()=>{}); }
   else if(navigator.clipboard){ navigator.clipboard.writeText(txt).catch(()=>{}); }
-  $('sharebtn').textContent=t('copiedBtn');
-};
+  if(btn===$('sharetop')){ btn.textContent='✅'; setTimeout(()=>{btn.textContent='📋';},1500); }
+  else if(btn)btn.textContent=t('copiedBtn');
+}
+$('sharebtn').onclick=()=>doShare($('sharebtn'));
+$('sharetop').onclick=()=>doShare($('sharetop'));
 $('prestige').onclick=()=>{
   if(mode==='daily'){
     try{localStorage.setItem('rtr-mode','free');}catch(e){}
@@ -819,6 +831,7 @@ function render(){
   $('cash').textContent=fmt(cash).slice(1);
   const sk=getStreak();
   $('badges').textContent='🏆'.repeat(prestige)+(sk.n>=2?' 🔥'+sk.n:'');
+  $('sharetop').style.display=(mode==='daily')?'':'none';
   renderBils(); renderMarket(); renderUpgrades();
   if(focusId){ const el=$(focusId); if(el&&!el.disabled)el.focus(); }
   save();
@@ -846,6 +859,11 @@ function applyLang(){
   $('crewbtn').textContent=crew?('👯 '+crew):'👯';
   $('crewbtn').setAttribute('aria-label','crew mode');
   $('fbbtn').textContent=t('feedbackBtn');
+  if(KOFI_URL){
+    const k3=$('kofi3');
+    k3.href=KOFI_URL; k3.style.display='inline-block';
+    k3.setAttribute('aria-label',t('kofiBtn'));
+  }
   $('fontbtn').setAttribute('aria-label','text size');
   $('homebtn').setAttribute('role','button');
   $('homebtn').setAttribute('tabindex','0');
