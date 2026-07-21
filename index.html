@@ -10,6 +10,15 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>RUIN THE RICH — a doodle economy crime</title>
+<meta property="og:title" content="RUIN THE RICH">
+<meta property="og:description" content="four terrible rich doodles. one market. zero regulation. their strategies are public — that's the problem (for them). free daily challenge in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dameoffensive.github.io/ruin-the-rich/">
+<meta property="og:image" content="https://dameoffensive.github.io/ruin-the-rich/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RUIN THE RICH">
+<meta name="twitter:description" content="bankrupt four idiot billionaires by reading the rules printed on their foreheads. new market daily. play free in your browser.">
+<meta name="twitter:image" content="https://dameoffensive.github.io/ruin-the-rich/og.png">
 <style>
   :root{
     --ink:#2b2b2b; --paper:#fdf6e3; --card:#fffdf5; --red:#e05252; --green:#4a9e5c;
@@ -472,8 +481,27 @@ function quirkLine(){
   if(qs.length===0)qs.push(t('qNormal'));
   return qs.join(' · ');
 }
+/* ---------- streaks: consecutive days with a daily win ---------- */
+function getStreak(){
+  try{ return JSON.parse(localStorage.getItem('rtr-streak'))||{last:0,n:0,best:0}; }
+  catch(e){ return {last:0,n:0,best:0}; }
+}
+function bumpStreak(){
+  const s=getStreak();
+  if(s.last===DAY)return s;              // already counted today
+  s.n=(s.last===DAY-1)?s.n+1:1;          // consecutive day or fresh start
+  s.last=DAY;
+  if(s.n>s.best)s.best=s.n;
+  try{ localStorage.setItem('rtr-streak',JSON.stringify(s)); }catch(e){}
+  return s;
+}
 function shareText(){
-  return 'RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'')+'\n'+t('shareRounds',tickN)+'\n'+t('shareOrder')+bankruptOrder.join('→');
+  const s=getStreak();
+  return 'RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'')
+    +'\n'+t('shareRounds',tickN)
+    +'\n'+t('shareOrder')+bankruptOrder.join('→')
+    +(s.n>=2?'\n🔥 '+s.n:'')
+    +'\n'+GAME_URL;
 }
 
 /* ---------- save / load ---------- */
@@ -684,7 +712,9 @@ function checkWin(){
   if(bils.every(b=>!b.alive)){
     won=true; sfxWin();
     if(mode==='daily'){
-      $('overlaytext').textContent=t('dailyClear',PUZZLE,tickN,bankruptOrder.join('→'));
+      const s=bumpStreak();
+      $('overlaytext').textContent=t('dailyClear',PUZZLE,tickN,bankruptOrder.join('→'))
+        +(s.n>=2?' 🔥 '+s.n+'!'+(s.best>s.n?' (best: '+s.best+')':''):'');
       $('sharebtn').style.display='inline-block';
       $('sharebtn').textContent=t('shareBtn');
       $('prestige').textContent=t('playFreeBtn');
@@ -787,7 +817,8 @@ function render(){
   // knock keyboard/gamepad focus loose mid-navigation
   const focusId=(document.activeElement&&document.activeElement.id)||null;
   $('cash').textContent=fmt(cash).slice(1);
-  $('badges').textContent='🏆'.repeat(prestige);
+  const sk=getStreak();
+  $('badges').textContent='🏆'.repeat(prestige)+(sk.n>=2?' 🔥'+sk.n:'');
   renderBils(); renderMarket(); renderUpgrades();
   if(focusId){ const el=$(focusId); if(el&&!el.disabled)el.focus(); }
   save();
@@ -1001,6 +1032,8 @@ function initStart(){
   applyStart();
 }
 
+/* the public URL of the game — appended to share texts. update if it moves. */
+const GAME_URL='https://dameoffensive.github.io/ruin-the-rich/';
 /* support link: shown on the title screen and win screen. empty = hidden. */
 const KOFI_URL='https://ko-fi.com/dameoffensive';
 /* beta lock: put a word between the quotes to password-protect this build.

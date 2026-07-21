@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fdf6e3"/>
+  <!-- dotted paper texture -->
+  <g fill="#00000010">
+    <circle cx="100" cy="80" r="3"/><circle cx="300" cy="150" r="3"/><circle cx="1100" cy="90" r="3"/>
+    <circle cx="950" cy="550" r="3"/><circle cx="150" cy="520" r="3"/><circle cx="600" cy="60" r="3"/>
+    <circle cx="1050" cy="300" r="3"/><circle cx="80" cy="300" r="3"/><circle cx="500" cy="580" r="3"/>
+  </g>
+  <!-- title -->
+  <g font-family="Comic Sans MS, Chalkboard SE, cursive" font-weight="bold" text-anchor="middle">
+    <text x="600" y="150" font-size="96" fill="#2b2b2b">RUIN <tspan fill="#e05252">THE</tspan> RICH</text>
+    <text x="600" y="215" font-size="30" fill="#2b2b2b" opacity="0.7" font-weight="normal">four terrible rich doodles. one market. zero regulation.</text>
+  </g>
+  <!-- broke billionaire doodle (center-left) -->
+  <g transform="translate(240,250) scale(1.6)" stroke="#2b2b2b" stroke-width="7" stroke-linecap="round">
+    <path d="M40,90 C35,55 60,35 85,35 C115,35 140,58 135,95 C132,130 112,150 82,150 C52,150 44,125 40,90 Z" fill="#cfe6f5"/>
+    <g transform="rotate(-24 105 30)">
+      <rect x="75" y="-10" width="60" height="35" rx="4" fill="#2b2b2b" stroke="none"/>
+      <rect x="62" y="21" width="86" height="12" rx="6" fill="#2b2b2b" stroke="none"/>
+    </g>
+    <path d="M60,80 L76,96 M76,80 L60,96" fill="none"/>
+    <path d="M104,80 L120,96 M120,80 L104,96" fill="none"/>
+    <path d="M70,125 C82,115 102,115 114,125" fill="none"/>
+  </g>
+  <!-- happy little freak doodle (center-right) with money -->
+  <g transform="translate(760,265) scale(1.5)" stroke="#2b2b2b" stroke-width="7" stroke-linecap="round">
+    <path d="M40,80 C38,50 58,35 80,35 C105,35 122,52 120,82 C118,115 102,132 78,132 C55,132 42,112 40,80 Z" fill="#ffd9a0"/>
+    <circle cx="65" cy="75" r="5" fill="#2b2b2b" stroke="none"/>
+    <circle cx="98" cy="75" r="5" fill="#2b2b2b" stroke="none"/>
+    <path d="M58,98 C70,112 94,112 106,98" fill="none"/>
+    <path d="M120,90 C140,84 150,70 146,55" fill="none"/>
+  </g>
+  <g font-family="Comic Sans MS, Chalkboard SE, cursive" font-size="52" fill="#4a9e5c">
+    <text x="935" y="290" transform="rotate(15 935 290)">$</text>
+    <text x="985" y="360" transform="rotate(-10 985 360)">$</text>
+    <text x="920" y="430" transform="rotate(8 920 430)">$</text>
+  </g>
+  <!-- share-text mock -->
+  <g font-family="Comic Sans MS, Chalkboard SE, cursive" text-anchor="middle">
+    <rect x="380" y="420" width="440" height="150" rx="18" fill="#ffffff" stroke="#2b2b2b" stroke-width="5"/>
+    <text x="600" y="470" font-size="30" fill="#2b2b2b" font-weight="bold">RUIN THE RICH #37</text>
+    <text x="600" y="510" font-size="28" fill="#2b2b2b">💀💀💀💀 in 61 rounds</text>
+    <text x="600" y="548" font-size="26" fill="#2b2b2b">💧→🪙→🍌→🤖 · 🔥 12</text>
+  </g>
+  <!-- footer -->
+  <text x="600" y="612" font-family="Comic Sans MS, Chalkboard SE, cursive" font-size="24" fill="#2b2b2b" opacity="0.6" text-anchor="middle">free in your browser · new billionaires at midnight</text>
+</svg>
