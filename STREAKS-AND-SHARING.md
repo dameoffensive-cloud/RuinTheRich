@@ -9,7 +9,7 @@ RUIN THE RICH #37 👯PEANUCKLE
 💀💀💀💀 in 61 rounds
 order of ruin: 💧→🪙→🍌→🤖
 🔥 12
-https://dameoffensive.github.io/ruin-the-rich/
+https://dameoffensive-cloud.github.io/RuinTheRich/
 ```
 
 Line by line:

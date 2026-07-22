@@ -13,12 +13,12 @@
 <meta property="og:title" content="RUIN THE RICH">
 <meta property="og:description" content="four terrible rich doodles. one market. zero regulation. their strategies are public — that's the problem (for them). free daily challenge in your browser.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://dameoffensive.github.io/ruin-the-rich/">
-<meta property="og:image" content="https://dameoffensive.github.io/ruin-the-rich/og.png">
+<meta property="og:url" content="https://dameoffensive-cloud.github.io/RuinTheRich/">
+<meta property="og:image" content="https://dameoffensive-cloud.github.io/RuinTheRich/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RUIN THE RICH">
 <meta name="twitter:description" content="bankrupt four idiot billionaires by reading the rules printed on their foreheads. new market daily. play free in your browser.">
-<meta name="twitter:image" content="https://dameoffensive.github.io/ruin-the-rich/og.png">
+<meta name="twitter:image" content="https://dameoffensive-cloud.github.io/RuinTheRich/og.png">
 <style>
   :root{
     --ink:#2b2b2b; --paper:#fdf6e3; --card:#fffdf5; --red:#e05252; --green:#4a9e5c;
@@ -106,6 +106,18 @@
     padding:5px 10px; box-shadow:2px 2px 0 #00000022; margin:1px; text-decoration:none;
   }
   .btnlike:hover{background:#fff3b0}
+  #modechip{
+    font-size:calc(12px*var(--fs)); border:2px solid var(--ink); border-radius:12px 9px 11px 10px/10px 11px 9px 12px;
+    padding:3px 10px; font-weight:bold;
+  }
+  body.m-solo #modechip{background:#cfe6f5}
+  body.m-crew #modechip{background:#cdeccd}
+  body.m-free #modechip{background:#e6d9ff}
+  body.m-crew .panel{background:#f0faf0}
+  body.m-free .panel{background:#f6f0ff}
+  .kofi{background:#ffef9e; animation:cozy 3s ease-in-out infinite}
+  @keyframes cozy{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  #overlay .btnlike{font-size:calc(16px*var(--fs)); padding:8px 18px}
   select{
     font-family:inherit; font-size:calc(12px*var(--fs)); background:#fff; color:var(--ink);
     border:2px solid var(--ink); border-radius:10px; padding:5px 6px; min-height:30px;
@@ -158,7 +170,7 @@
   #start .foot{font-size:calc(11px*var(--fs)); opacity:.6; max-width:460px}
   /* respect reduced motion */
   @media (prefers-reduced-motion:reduce){
-    .bil .doodle,#overlay h1{animation:none}
+    .bil .doodle,#overlay h1,.kofi{animation:none}
     .confetti{display:none}
     .floaty{animation-duration:.6s}
   }
@@ -174,15 +186,16 @@
   <button class="startbtn" id="btnGroup"></button>
   <button class="startbtn" id="btnFree"></button>
   <button id="fbbtn2" style="opacity:.75"></button>
-  <a id="kofi1" class="btnlike" style="display:none; opacity:.75" target="_blank" rel="noopener"></a>
+  <a id="kofi1" class="btnlike kofi" style="display:none" target="_blank" rel="noopener"></a>
 </div>
 <div class="topbar">
   <h1 id="homebtn" style="cursor:pointer" title="back to menu">RUIN <span>THE</span> RICH</h1>
   <div class="cash">💵 <span id="cash">0</span></div>
   <div class="badges" id="badges"></div>
+  <span id="modechip"></span>
   <div class="sysbtns">
     <button id="sharetop" style="display:none">📋</button>
-    <a id="kofi3" class="btnlike" style="display:none" target="_blank" rel="noopener" title="support the doodles">☕</a>
+    <a id="kofi3" class="btnlike kofi" style="display:none" target="_blank" rel="noopener" title="support the doodles">☕ ko-fi</a>
     <select id="langsel" title="language"></select>
     <button id="crewbtn" title="crew mode: shared market with friends">👯</button>
     <button id="fontbtn" title="text size">🔠</button>
@@ -215,7 +228,7 @@
   <p id="overlaytext"></p>
   <button id="sharebtn" style="display:none"></button>
   <button id="prestige"></button>
-  <a id="kofi2" class="btnlike" style="display:none" target="_blank" rel="noopener"></a>
+  <a id="kofi2" class="btnlike kofi" style="display:none" target="_blank" rel="noopener"></a>
 </div>
 
 <script src="langs.js"></script>
@@ -275,7 +288,12 @@ en:{
   bBaron:"peasant panic, baron bargain 🧐", bWater:"💧📉 no… my water…", bGold:"water is the new gold 🤑",
   crewPrompt:"crew word — everyone who enters the same word gets the same market. empty = solo daily.",
   globalBtn:"🌍 global daily #{0}", groupBtn:"👯 play with your group", freeBtn:"♾️ free play (endless)", feedbackBtn:"💬 feedback",
-  kofiBtn:"☕ support the doodles"
+  kofiBtn:"☕ support the doodles",
+  bilTitle4:"influencer, heiress, \"entrepreneur\"", bilRule4:"📋 HER WHOLE STRATEGY: sees YOU sell something → declares it \"so over\" and dumps it too, even harder. she has never once sold anything except the bottom.",
+  bilTitle5:"defense contractor, five golf memberships", bilRule5:"📋 HIS WHOLE STRATEGY: lands a fat government contract every so often (missile money goes UP, he gets richer). but if his missiles crash hard in one round → congressional hearing. very expensive.",
+  bilTitle6:"CEO of his own biggest fan", bilRule6:"📋 HIS WHOLE STRATEGY: buys back his own stock whenever it dips below launch price. forever. with his own money. you see the problem.",
+  bilTitle7:"fourth-generation art hoarder", bilRule7:"📋 HER WHOLE STRATEGY: anything hitting a new high, she MUST own it, at any price. the auction paddle is permanently raised.",
+  asset4:"Limited-Edition Handbags", asset5:"Missile Futures", asset6:"BARR-E Stock", asset7:"NFT Oil Paintings"
 },
 es:{
   sub:"un juego sobre cuatro doodles ricos y terribles y el bicho raro (tú) que los arruina. sus estrategias son públicas. ese es el problema (para ellos).",
@@ -328,7 +346,12 @@ es:{
   bBaron:"pánico plebeyo, ganga del barón 🧐", bWater:"💧📉 no… mi agua…", bGold:"el agua es el nuevo oro 🤑",
   crewPrompt:"palabra de equipo — todos los que escriban la misma palabra juegan el mismo mercado. vacío = diario en solitario.",
   globalBtn:"🌍 diario global #{0}", groupBtn:"👯 jugar con tu grupo", freeBtn:"♾️ modo libre (infinito)", feedbackBtn:"💬 comentarios",
-  kofiBtn:"☕ apoya a los doodles"
+  kofiBtn:"☕ apoya a los doodles",
+  bilTitle4:"influencer, heredera, \"emprendedora\"", bilRule4:"📋 TODA SU ESTRATEGIA: te ve vender algo → declara que \"ya pasó de moda\" y también lo tira, aún más fuerte. jamás ha vendido nada que no fuera el fondo.",
+  bilTitle5:"contratista militar, cinco membresías de golf", bilRule5:"📋 TODA SU ESTRATEGIA: consigue un contrato gordo del gobierno cada tanto (el dinero de misiles SUBE, él se enriquece). pero si sus misiles se desploman fuerte en una ronda → audiencia en el congreso. carísima.",
+  bilTitle6:"CEO y fan número uno de sí mismo", bilRule6:"📋 TODA SU ESTRATEGIA: recompra sus propias acciones cada vez que caen bajo el precio de salida. para siempre. con su propio dinero. ya ves el problema.",
+  bilTitle7:"acaparadora de arte de cuarta generación", bilRule7:"📋 TODA SU ESTRATEGIA: cualquier cosa que alcance un nuevo máximo, DEBE ser suya, a cualquier precio. la paleta de subasta está permanentemente en alto.",
+  asset4:"Bolsos Edición Limitada", asset5:"Futuros de Misiles", asset6:"Acciones BARR-E", asset7:"Óleos NFT"
 }
 };
 if(window.EXTRA_LANGS)Object.assign(LANGS,window.EXTRA_LANGS);
@@ -398,6 +421,48 @@ const doodles={
     '<rect x="34" y="47" width="8" height="6" rx="1" fill="#fff"/><text x="35" y="52" font-size="5" font-family="monospace">AI</text>'+
     '<path d="M17,48 C11,48 8,44 9,40" '+S+'/><path d="M43,48 C49,48 52,44 51,40" '+S+'/>'+
     '<path d="M25,58 L24,66 M35,58 L36,66" '+S+'/><path d="M20,66 L26,66 M33,66 L40,66" '+S+'/>'
+  ),
+  tessa: svgWrap(
+    '<path d="M21,28 C20,17 26,12 31,12 C38,12 43,18 42,28 C41,37 38,42 31,42 C25,42 22,37 21,28 Z" fill="#ffe1ef" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M18,24 C16,10 30,6 36,8 C44,11 47,20 44,27 L43,18 C37,12 25,13 21,19 Z" fill="#f5c96b" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M19,26 L45,26 M22,22 C24,20 28,20 30,22 M34,22 C36,20 40,20 42,22" '+S+'/>'+
+    '<rect x="21" y="24" width="9" height="6" rx="3" fill="#e98fc0"/><rect x="34" y="24" width="9" height="6" rx="3" fill="#e98fc0"/><path d="M30,26 L34,26" '+S+'/>'+
+    '<path d="M28,35 C30,37 33,37 35,35" '+S+'/>'+
+    '<path d="M20,46 C20,42 25,40 31,40 C37,40 42,42 42,46 L43,58 L19,58 Z" fill="#e98fc0" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M19,48 C13,48 10,44 11,40" '+S+'/><path d="M43,46 C48,47 50,52 48,56" '+S+'/><path d="M45,54 L54,54 L52,64 L46,64 Z" fill="#fff" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M26,58 L25,66 M36,58 L37,66" '+S+'/><path d="M21,66 L27,66 M34,66 L41,66" '+S+'/>'
+  ),
+  grift: svgWrap(
+    '<path d="M17,30 C16,18 24,13 31,13 C39,13 45,19 44,31 C43,44 39,50 30,50 C21,50 18,42 17,30 Z" fill="#d8e2c8" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M16,20 L46,20 L44,12 L18,12 Z" fill="#5b6d43" '+S.replace('fill="none"','')+'/><path d="M14,20 L48,20" '+S+'/>'+
+    '<circle cx="24" cy="29" r="2.4" fill="#2b2b2b"/><circle cx="38" cy="29" r="2.4" fill="#2b2b2b"/>'+
+    '<path d="M20,25 L28,25 M34,25 L42,25" '+S+'/>'+
+    '<path d="M24,40 L38,40" '+S+'/>'+
+    '<path d="M18,48 C18,44 24,42 31,42 C38,42 44,44 44,48 L45,58 L17,58 Z" fill="#5b6d43" '+S.replace('fill="none"','')+'/>'+
+    '<circle cx="24" cy="50" r="2" fill="#f5c96b"/><circle cx="29" cy="50" r="2" fill="#f5c96b"/><circle cx="24" cy="55" r="2" fill="#e05252"/>'+
+    '<path d="M17,50 C11,49 9,44 10,40" '+S+'/><path d="M45,50 C51,49 53,44 52,40" '+S+'/>'+
+    '<path d="M26,58 L25,66 M36,58 L37,66" '+S+'/><path d="M21,66 L27,66 M34,66 L41,66" '+S+'/>'
+  ),
+  barry: svgWrap(
+    '<path d="M20,28 C19,17 25,12 30,12 C37,12 42,17 41,28 C40,37 37,41 30,41 C24,41 21,37 20,28 Z" fill="#ffd9c9" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M19,22 C18,12 27,8 32,9 C39,10 43,15 42,22 L40,17 C35,12 25,13 21,18 Z" fill="#2b2b2b" '+S.replace('fill="none"','')+'/>'+
+    '<circle cx="25" cy="26" r="2.2" fill="#2b2b2b"/><circle cx="35" cy="26" r="2.2" fill="#2b2b2b"/>'+
+    '<path d="M25,34 C28,37 33,37 35,33" '+S+'/>'+
+    '<path d="M18,45 C18,41 24,39 30,39 C36,39 42,41 42,45 L43,58 L17,58 Z" fill="#4a6fa5" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M28,41 L30,50 L32,41" fill="#fff" '+S.replace('fill="none"','')+'/><path d="M29,44 L31,44 M28,47 L32,47" stroke="#e05252" stroke-width="1.6"/>'+
+    '<path d="M17,48 C11,47 9,42 10,38" '+S+'/><path d="M43,48 C49,49 51,54 49,58" '+S+'/><path d="M46,55 C48,52 52,52 53,55 C54,58 50,60 48,58" '+S+'/>'+
+    '<path d="M25,58 L24,66 M35,58 L36,66" '+S+'/><path d="M20,66 L26,66 M33,66 L40,66" '+S+'/>'
+  ),
+  mona: svgWrap(
+    '<path d="M20,29 C19,18 25,13 30,13 C37,13 42,18 41,29 C40,38 37,42 30,42 C24,42 21,38 20,29 Z" fill="#f0ddc8" '+S.replace('fill="none"','')+'/>'+
+    '<path d="M22,16 C22,8 38,8 38,16 C40,12 42,14 41,18 L21,18 C20,14 22,12 22,16 Z" fill="#c9b458" '+S.replace('fill="none"','')+'/>'+
+    '<circle cx="25" cy="27" r="2.2" fill="#2b2b2b"/><circle cx="35" cy="27" r="2.2" fill="#2b2b2b"/>'+
+    '<path d="M22,23 L28,22 M32,22 L38,23" '+S+'/>'+
+    '<path d="M27,35 L34,35" '+S+'/>'+
+    '<path d="M19,46 C19,42 24,40 30,40 C36,40 41,42 41,46 L42,58 L18,58 Z" fill="#9b7bb8" '+S.replace('fill="none"','')+'/>'+
+    '<circle cx="26" cy="43" r="1.6" fill="#fff"/><circle cx="30" cy="44" r="1.6" fill="#fff"/><circle cx="34" cy="43" r="1.6" fill="#fff"/>'+
+    '<path d="M18,48 C12,47 10,42 11,38" '+S+'/><path d="M42,48 C48,48 50,44 49,40" '+S+'/><rect x="44" y="30" width="12" height="14" rx="1" fill="#fff" '+S.replace('fill="none"','')+'/><circle cx="50" cy="37" r="3" '+S+'/>'+
+    '<path d="M25,58 L24,66 M35,58 L36,66" '+S+'/><path d="M20,66 L26,66 M33,66 L40,66" '+S+'/>'
   )
 };
 
@@ -405,20 +470,39 @@ const doodles={
 const START_WORTH=2500, START_CASH=50, SAVE_KEY='rtr-save-v1';
 let cash=START_CASH, prestige=0, chaos=1, tickN=0, playerLast=null, ivanaCool=0, won=false, muted=false;
 
-const TOYS=[['🚀','🛥️','🦍'],['🏰','🐎','🍌'],['🏝️','⛲','💎'],['🤖','✈️','🎙️']];
-const bils=[
-  {key:'chad', name:'Chadwick Coyne III', worth:START_WORTH, alive:true, toys:TOYS[0].slice()},
-  {key:'baron', name:'Baron Reginald Von Yachtsworth', worth:START_WORTH, alive:true, toys:TOYS[1].slice()},
-  {key:'grimble', name:'Grimble Hoardington', worth:START_WORTH, alive:true, toys:TOYS[2].slice()},
-  {key:'ivana', name:'Ivana Disrupt', worth:START_WORTH, alive:true, toys:TOYS[3].slice()}
+/* ---------- the richie pool: 8 candidates, 4 drawn per day ---------- */
+const ROSTER=[
+  {key:'chad',    name:'Chadwick Coyne III',            act:'copycatBuyer', emoji:'🪙', base:8,  titleKey:'bilTitle0', ruleKey:'bilRule0', assetKey:'asset0', toys:['🚀','🛥️','🦍']},
+  {key:'baron',   name:'Baron Reginald Von Yachtsworth',act:'dipBuyer',     emoji:'🍌', base:20, titleKey:'bilTitle1', ruleKey:'bilRule1', assetKey:'asset1', toys:['🏰','🐎','🍌']},
+  {key:'grimble', name:'Grimble Hoardington',           act:'selfBubble',   emoji:'💧', base:5,  titleKey:'bilTitle2', ruleKey:'bilRule2', assetKey:'asset2', toys:['🏝️','⛲','💎']},
+  {key:'ivana',   name:'Ivana Disrupt',                 act:'panicSeller',  emoji:'🤖', base:12, titleKey:'bilTitle3', ruleKey:'bilRule3', assetKey:'asset3', toys:['🤖','✈️','🎙️']},
+  {key:'tessa',   name:'Tessa Trendly',                 act:'copycatSeller',emoji:'👜', base:15, titleKey:'bilTitle4', ruleKey:'bilRule4', assetKey:'asset4', toys:['💅','🛍️','📸']},
+  {key:'grift',   name:'General Maximus Grift',         act:'contractor',   emoji:'🚀', base:25, titleKey:'bilTitle5', ruleKey:'bilRule5', assetKey:'asset5', toys:['🎖️','🛩️','⛳']},
+  {key:'barry',   name:'Barry Buyback',                 act:'buyback',      emoji:'📈', base:10, titleKey:'bilTitle6', ruleKey:'bilRule6', assetKey:'asset6', toys:['🏢','🚁','🛥️']},
+  {key:'mona',    name:'Mona Lisa Vanderbux',           act:'auctionFever', emoji:'🖼️', base:30, titleKey:'bilTitle7', ruleKey:'bilRule7', assetKey:'asset7', toys:['🖼️','💎','🦚']}
 ];
-const assets=[
-  {emoji:'🪙', price:8,  base:8,  held:0, owner:0},
-  {emoji:'🍌', price:20, base:20, held:0, owner:1},
-  {emoji:'💧', price:5,  base:5,  held:0, owner:2},
-  {emoji:'🤖', price:12, base:12, held:0, owner:3}
-];
-assets.forEach(a=>{a.hist=[a.price]; a.lastTick=a.price;});
+let CAST=[0,1,2,3];
+const bils=[], assets=[];
+function buildCast(indices){
+  CAST=indices.slice(0,4);
+  bils.length=0; assets.length=0;
+  CAST.forEach((ri,slot)=>{
+    const c=ROSTER[ri];
+    bils.push({key:c.key, name:c.name, act:c.act, titleKey:c.titleKey, ruleKey:c.ruleKey,
+      worth:START_WORTH*Math.pow(8,prestige), alive:true, toys:c.toys.slice()});
+    assets.push({emoji:c.emoji, price:c.base, base:c.base, held:0, owner:slot,
+      assetKey:c.assetKey, hist:[c.base], lastTick:c.base});
+  });
+}
+function castPick(seedRng){
+  const idx=[0,1,2,3,4,5,6,7];
+  for(let k=idx.length-1;k>0;k--){
+    const j=Math.floor(seedRng.next()*(k+1));
+    const tmp=idx[k]; idx[k]=idx[j]; idx[j]=tmp;
+  }
+  return idx.slice(0,4).sort((a,b)=>a-b);
+}
+buildCast(CAST); // placeholder; the real cast is chosen at boot
 
 const upgrades=[
   {lvl:0, cost:l=>Math.round(30*Math.pow(3,l)), max:8},
@@ -448,6 +532,85 @@ const SEED_BASE=(DAY+CREW_H)>>>0;
 const KEY=(mode==='daily')?('rtr-daily-'+DAY+(crew?'-'+CREW_H:'')):SAVE_KEY;
 let bankruptOrder=[];
 
+// challenge links: ?p=<puzzle>&beat=<rounds> turns a share into a dare.
+// only honored for today's puzzle; remembered for the rest of the day.
+let beatTarget=0;
+try{
+  const q=new URLSearchParams(location.search);
+  const qp=parseInt(q.get('p')||'0',10), qb=parseInt(q.get('beat')||'0',10);
+  if(qb>0&&qp===PUZZLE){ beatTarget=qb; localStorage.setItem('rtr-beat-'+DAY,String(qb)); }
+  else{ beatTarget=parseInt(localStorage.getItem('rtr-beat-'+DAY)||'0',10)||0; }
+}catch(e){}
+
+/* ---------- crew sync (optional backend — see CREW-SYNC-SETUP.md) ----------
+   fill in SB_URL + SB_KEY from a free supabase project and crew runs become
+   a true raid: billionaire net worth is a SHARED health pool, everyone's
+   damage counts, and you see teammates' hits roll in. empty = classic
+   same-seed crew mode with separate runs. */
+const SB_URL='';
+const SB_KEY='';
+const CREW_SYNC=!!(SB_URL&&SB_KEY&&mode==='daily'&&crew);
+let PLAYER_ID='p0';
+try{
+  PLAYER_ID=localStorage.getItem('rtr-pid')||('p'+Math.floor(Math.random()*1e9));
+  localStorage.setItem('rtr-pid',PLAYER_ID);
+}catch(e){}
+let crewDmg=[0,0,0,0], pendDmg=[0,0,0,0], lastOthers=0;
+// deterministic shared baseline: same on every device, grows through the day
+function sharedBase(){
+  const frac=(Date.now()/86400000)%1;
+  return Math.min(START_WORTH*2, START_WORTH*(1+0.5*frac));
+}
+function sharedWorth(i){ return Math.max(0, sharedBase()-crewDmg[i]-pendDmg[i]); }
+function sbHeaders(){
+  return {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
+}
+function flushDmg(){
+  if(!CREW_SYNC)return;
+  const rows=[];
+  pendDmg.forEach((d,i)=>{ if(d>=1)rows.push({day:DAY,crew:String(CREW_H),player:PLAYER_ID,bil:i,dmg:Math.round(d)}); });
+  if(!rows.length)return;
+  fetch(SB_URL+'/rest/v1/crew_events',{method:'POST',headers:sbHeaders(),body:JSON.stringify(rows)})
+    .then(r=>{ if(r.ok)rows.forEach(row=>{ crewDmg[row.bil]+=row.dmg; pendDmg[row.bil]=0; }); })
+    .catch(()=>{});
+}
+function pollCrew(){
+  if(!CREW_SYNC)return;
+  fetch(SB_URL+'/rest/v1/crew_events?day=eq.'+DAY+'&crew=eq.'+CREW_H+'&select=bil,dmg,player',{headers:sbHeaders()})
+    .then(r=>r.json()).then(rows=>{
+      if(!Array.isArray(rows))return;
+      const sums=[0,0,0,0]; let others=0;
+      rows.forEach(x=>{
+        const d=Number(x.dmg)||0; sums[x.bil]+=d;
+        if(x.player!==PLAYER_ID)others+=d;
+      });
+      crewDmg=sums;
+      if(others>lastOthers+1&&lastOthers>0)log('👯 +'+fmt(others-lastOthers));
+      lastOthers=others;
+      applySharedWorth();
+    }).catch(()=>{});
+}
+function applySharedWorth(){
+  if(!CREW_SYNC)return;
+  bils.forEach((b,i)=>{
+    if(!b.alive)return;
+    b.worth=sharedWorth(i);
+    if(b.worth<=0){
+      b.worth=0; b.alive=false;
+      bankruptOrder.push(assets[i].emoji);
+      log(t('bankruptLog',b.name.toUpperCase(),'👯'),true);
+      if(assets[i].held>0){ cash+=assets[i].held*assets[i].price; assets[i].held=0; }
+      checkWin();
+    }
+  });
+}
+if(CREW_SYNC){
+  setInterval(flushDmg,4000);
+  setInterval(pollCrew,6000);
+  setTimeout(pollCrew,1500);
+  window.addEventListener('beforeunload',flushDmg);
+}
+
 function RNG(seed){ this.s=seed>>>0; }
 RNG.prototype.next=function(){
   this.s=(this.s+0x6D2B79F5)>>>0; let t=this.s;
@@ -475,11 +638,11 @@ const P=(function(){
 })();
 function quirkLine(){
   const qs=[];
-  if(P.chadPump>0.14)qs.push(t('qChad'));
-  if(P.ivanaThresh<0.165)qs.push(t('qIvanaJumpy'));
-  if(P.ivanaDmg>0.085)qs.push(t('qIvanaHard'));
-  if(P.baronCost>14)qs.push(t('qBaron'));
-  if(P.grimbleCap<3.0)qs.push(t('qGrimble'));
+  if(CAST.indexOf(0)>=0&&P.chadPump>0.14)qs.push(t('qChad'));
+  if(CAST.indexOf(3)>=0&&P.ivanaThresh<0.165)qs.push(t('qIvanaJumpy'));
+  if(CAST.indexOf(3)>=0&&P.ivanaDmg>0.085)qs.push(t('qIvanaHard'));
+  if(CAST.indexOf(1)>=0&&P.baronCost>14)qs.push(t('qBaron'));
+  if(CAST.indexOf(2)>=0&&P.grimbleCap<3.0)qs.push(t('qGrimble'));
   if(qs.length===0)qs.push(t('qNormal'));
   return qs.join(' · ');
 }
@@ -497,20 +660,40 @@ function bumpStreak(){
   try{ localStorage.setItem('rtr-streak',JSON.stringify(s)); }catch(e){}
   return s;
 }
+/* archetype: a title stamped on every win, derived from how you played.
+   english-only on purpose — they're meme names, like gamertags. */
+function archetype(){
+  if(tickN<=60)return 'Speedrun Sociopath';
+  if(upgrades[3].lvl>=1)return 'Group Chat Leaker';
+  if(upgrades[0].lvl>=4)return 'Market Menace';
+  if(upgrades[2].lvl>=6)return 'Professional Victim';
+  if(bankruptOrder[0]==='💧')return 'The Patient Vulture';
+  if(bankruptOrder[0]==='🤖')return 'Panic Engineer';
+  if(bankruptOrder[0]==='🪙')return 'Copycat Slayer';
+  if(bankruptOrder[0]==='🍌')return 'Knife Catcher Catcher';
+  if(bankruptOrder[0]==='👜')return 'Trend Assassin';
+  if(bankruptOrder[0]==='🚀')return 'Hearing Scheduler';
+  if(bankruptOrder[0]==='📈')return 'Buyback Breaker';
+  if(bankruptOrder[0]==='🖼️')return 'Auction Crasher';
+  if(tickN>400)return 'The Slow Blade';
+  return 'Little Freak';
+}
 function shareText(){
   const s=getStreak();
   const dead=bils.filter(b=>!b.alive).length;
   const head='RUIN THE RICH #'+PUZZLE+(crew?' 👯'+crew.toUpperCase():'');
-  let body;
+  let body, url=GAME_URL;
   if(dead===4){
     body='\n'+t('shareRounds',tickN)
-        +'\n'+t('shareOrder')+bankruptOrder.join('→');
+        +'\n'+t('shareOrder')+bankruptOrder.join('→')
+        +'\n🏷️ '+archetype();
+    url=GAME_URL+'?p='+PUZZLE+'&beat='+tickN; // the dare
   }else{
     // partial run: skulls for the ruined, squares for the survivors, ⏳ round
     body='\n'+'💀'.repeat(dead)+'⬜'.repeat(4-dead)+' ⏳ '+tickN
         +(bankruptOrder.length?'\n'+t('shareOrder')+bankruptOrder.join('→'):'');
   }
-  return head+body+(s.n>=2?'\n🔥 '+s.n:'')+'\n'+GAME_URL;
+  return head+body+(s.n>=2?'\n🔥 '+s.n:'')+'\n'+url;
 }
 
 /* ---------- save / load ---------- */
@@ -518,7 +701,7 @@ function save(){
   try{
     localStorage.setItem(KEY, JSON.stringify({
       v:1, t:Date.now(), cash, prestige, chaos, tickN, ivanaCool, muted,
-      rngS:rng.s, order:bankruptOrder,
+      rngS:rng.s, order:bankruptOrder, cast:CAST,
       bils:bils.map(b=>({worth:b.worth, alive:b.alive, toys:b.toys})),
       assets:assets.map(a=>({price:a.price, held:a.held, hist:a.hist, lastTick:a.lastTick})),
       upg:upgrades.map(u=>u.lvl)
@@ -584,18 +767,19 @@ function bubble(i,txt){
 }
 function drain(i,amt,why){
   const b=bils[i]; if(!b.alive)return;
+  if(CREW_SYNC){ pendDmg[i]+=amt; applySharedWorth(); return; }
   b.worth-=amt;
   if(b.worth<=0){
     b.worth=0; b.alive=false;
-    bankruptOrder.push(['🪙','🍌','💧','🤖'][i]);
+    bankruptOrder.push(assets[i].emoji);
     log(t('bankruptLog',b.name.toUpperCase(),why),true);
     floaty('💀',true); sfxBankrupt();
-    const a=assets.find(x=>x.owner===i);
-    if(a&&a.held>0){ cash+=a.held*a.price; log(t('gotOut',t('asset'+assets.indexOf(a)),fmt(a.held*a.price))); a.held=0; }
+    const a=assets[i];
+    if(a&&a.held>0){ cash+=a.held*a.price; log(t('gotOut',t(a.assetKey),fmt(a.held*a.price))); a.held=0; }
     checkWin();
   }
 }
-function enrich(i,amt){ const b=bils[i]; if(b.alive)b.worth+=amt; }
+function enrich(i,amt){ if(CREW_SYNC)return; const b=bils[i]; if(b.alive)b.worth+=amt; }
 
 /* ---------- player actions ---------- */
 function buy(i,max){
@@ -606,7 +790,7 @@ function buy(i,max){
     cash-=a.price; enrich(a.owner,a.price); a.held++;
     a.price=clampP(a.price*(1+impact())); n++;
   }while(max);
-  if(n>0){ playerLast={type:'buy',asset:i,qty:n}; sfxBuy(); log(t('buyLog',n,t('asset'+i))); render(); }
+  if(n>0){ playerLast={type:'buy',asset:i,qty:n}; sfxBuy(); log(t('buyLog',n,t(a.assetKey))); render(); }
 }
 function dump(i){
   const a=assets[i], b=bils[a.owner]; if(!b.alive||won)return;
@@ -622,7 +806,7 @@ function dump(i){
   cash+=got;
   playerLast={type:'sell',asset:i,qty:n};
   sfxDump(); floaty('+'+fmt(got),true);
-  log(t('dumpLog',n,t('asset'+i),fmt(got)));
+  log(t('dumpLog',n,t(a.assetKey),fmt(got)));
   render();
 }
 
@@ -637,67 +821,110 @@ function tick(silent){
   // rich = earns a lot. wounded = earns crumbs. that's your opening.
   const W=START_WORTH*Math.pow(8,prestige); // scale losses with prestige wealth
   const capW=W*2;
-  bils.forEach(b=>{
-    if(b.alive&&b.worth<capW)b.worth=Math.min(capW,b.worth*1.003+1);
-  });
+  if(CREW_SYNC){
+    applySharedWorth(); // shared pool: interest is baked into the deterministic baseline
+  }else{
+    bils.forEach(b=>{
+      if(b.alive&&b.worth<capW)b.worth=Math.min(capW,b.worth*1.003+1);
+    });
+  }
   if(!silent&&Math.random()<0.04)log(t('interestLog'));
 
   // snapshot: which prices fell hard since last tick (player dumps included)
   const crashes=assets.map(a=>a.lastTick>0 && a.price < a.lastTick*(1-P.ivanaThresh));
   const dips=assets.map(a=>a.price<a.lastTick);
 
-  // CHADWICK: copies your buys, at the top
-  if(bils[0].alive && playerLast && playerLast.type==='buy'){
-    const a=assets[playerLast.asset];
-    if(bils[a.owner].alive){
-      a.price=clampP(a.price*(1+P.chadPump*cm));
-      const hist=a.hist.slice(-15), avg=hist.reduce((s,x)=>s+x,0)/hist.length;
-      if(a.price>avg*1.1){ drain(0,W*0.008*cm,t('whyAped',t('asset'+playerLast.asset))); if(!silent)bq.push([0,t('bMoon')]); }
-      else if(!silent)bq.push([0,t('bFew')]);
-      if(!silent&&Math.random()<0.4)log(t('chadLog',t('asset'+playerLast.asset)));
-    }
-    playerLast=null;
-  } else if(playerLast&&playerLast.type==='sell'){ playerLast=null; }
-
-  // IVANA: panic
+  // BILLIONAIRE BRAINS: today's cast acts by archetype
   if(ivanaCool>0)ivanaCool--;
-  if(bils[3].alive && ivanaCool===0 && crashes.some(c=>c)){
-    assets.forEach(a=>{a.price=clampP(a.price*(1-0.14*cm));});
-    drain(3,W*P.ivanaDmg*cm,t('whyPanic'));
-    ivanaCool=8;
-    if(!silent){bq.push([3,t('bSell')]); log(t('panicLog'),true);}
-  }
-
-  // BARON: buys every dip
-  if(bils[1].alive){
-    let bought=false;
-    assets.forEach((a,i)=>{
-      if(dips[i]&&R()<0.8){
-        a.price=clampP(a.price*(1+0.05*cm));
-        drain(1,W*(P.baronCost/2500)*cm,t('whyKnife'));
-        bought=true;
-      }
-    });
-    if(bought&&!silent&&Math.random()<0.5)bq.push([1,t('bBaron')]);
-  }
-
-  // GRIMBLE: self-inflating water bubble
-  if(bils[2].alive){
-    const w=assets[2];
-    w.price=clampP(w.price*(1+0.09*cm));
-    if(w.price>w.base*P.grimbleCap){
-      w.price=w.base*(0.8+R()*0.4);
-      drain(2,W*0.12*cm,t('whyPop'));
-      if(!silent){bq.push([2,t('bWater')]); log(t('popLog'),true);}
-    } else if(!silent&&Math.random()<0.15)bq.push([2,t('bGold')]);
-  }
+  const pl=playerLast; // consumed after the loop so multiple copycats can react
+  bils.forEach((b,i)=>{
+    if(!b.alive)return;
+    const own=assets[i];
+    switch(b.act){
+      case 'copycatBuyer':
+        if(pl&&pl.type==='buy'){
+          const a=assets[pl.asset];
+          if(bils[a.owner].alive){
+            a.price=clampP(a.price*(1+P.chadPump*cm));
+            const h=a.hist.slice(-15), avg=h.reduce((s,x)=>s+x,0)/h.length;
+            if(a.price>avg*1.1){ drain(i,W*0.008*cm,t('whyAped',t(a.assetKey))); if(!silent)bq.push([i,t('bMoon')]); }
+            else if(!silent)bq.push([i,t('bFew')]);
+            if(!silent&&Math.random()<0.4)log(t('chadLog',t(a.assetKey)));
+          }
+        }
+        break;
+      case 'panicSeller':
+        if(ivanaCool===0&&crashes.some(c=>c)){
+          assets.forEach(a=>{a.price=clampP(a.price*(1-0.14*cm));});
+          drain(i,W*P.ivanaDmg*cm,t('whyPanic'));
+          ivanaCool=8;
+          if(!silent){bq.push([i,t('bSell')]); log(t('panicLog'),true);}
+        }
+        break;
+      case 'dipBuyer':{
+        let bought=false;
+        assets.forEach((a,j)=>{
+          if(dips[j]&&R()<0.8){
+            a.price=clampP(a.price*(1+0.05*cm));
+            drain(i,W*(P.baronCost/2500)*cm,t('whyKnife'));
+            bought=true;
+          }
+        });
+        if(bought&&!silent&&Math.random()<0.5)bq.push([i,t('bBaron')]);
+        break;}
+      case 'selfBubble':
+        own.price=clampP(own.price*(1+0.09*cm));
+        if(own.price>own.base*P.grimbleCap){
+          own.price=own.base*(0.8+R()*0.4);
+          drain(i,W*0.12*cm,t('whyPop'));
+          if(!silent){bq.push([i,t('bWater')]); log(t('popLog'),true);}
+        } else if(!silent&&Math.random()<0.15)bq.push([i,t('bGold')]);
+        break;
+      case 'copycatSeller':
+        if(pl&&pl.type==='sell'){
+          const a=assets[pl.asset];
+          a.price=clampP(a.price*(1-0.10*cm)); // she dumps right behind you
+          drain(i,W*0.006*cm,t('whyMisc'));
+          if(!silent)bq.push([i,'👜📉']);
+        }
+        break;
+      case 'contractor':
+        if(crashes[i]){ drain(i,W*0.06*cm,t('whyMisc')); if(!silent)bq.push([i,'🚀⚖️']); }
+        else if(tickN%15===0){
+          own.price=clampP(own.price*1.15);
+          if(!CREW_SYNC&&b.worth<capW)b.worth=Math.min(capW,b.worth+W*0.004);
+          if(!silent)bq.push([i,'🚀💰']);
+        }
+        break;
+      case 'buyback':
+        if(own.price<own.base){
+          own.price=clampP(own.price*1.04);
+          drain(i,W*0.005*cm,t('whyMisc'));
+          if(!silent&&Math.random()<0.2)bq.push([i,'📈🍽️']);
+        } else if(!CREW_SYNC&&b.worth<capW)b.worth+=W*0.001;
+        break;
+      case 'auctionFever':
+        assets.forEach(a=>{
+          const h=a.hist.slice(-15);
+          if(h.length>5&&a.price>=Math.max.apply(null,h)&&R()<0.5){
+            a.price=clampP(a.price*1.08);
+            drain(i,W*0.004*cm,t('whyMisc'));
+            if(!silent&&Math.random()<0.3)bq.push([i,'🖼️🤯']);
+          }
+        });
+        break;
+    }
+  });
+  playerLast=null;
 
   // gentle drift + flavor losses
   assets.forEach(a=>{ a.price=clampP(a.price*(1+(R()-0.5)*0.04)); });
   if(R()<0.12){
+    // flavor mishaps belong to the original four; only fire if they're in today's cast
     const fl=[[0,5],[1,8],[2,4],[3,6]];
     const fi=Math.floor(R()*fl.length), f=fl[fi];
-    if(bils[f[0]].alive){ drain(f[0],f[1]*(W/2500),t('whyMisc')); if(!silent&&Math.random()<0.5)log(t('flavor'+fi)); }
+    const slot=CAST.indexOf(f[0]);
+    if(slot>=0&&bils[slot].alive){ drain(slot,f[1]*(W/2500),t('whyMisc')); if(!silent&&Math.random()<0.5)log(t('flavor'+fi)); }
   }
 
   // toy repossession
@@ -722,7 +949,10 @@ function checkWin(){
     won=true; sfxWin();
     if(mode==='daily'){
       const s=bumpStreak();
+      let extra=' 🏷️ '+archetype()+'.';
+      if(beatTarget)extra+=(tickN<=beatTarget?' 🎯 '+beatTarget+' → '+tickN+' 😎':' 🎯 '+beatTarget+' → '+tickN+' 💀');
       $('overlaytext').textContent=t('dailyClear',PUZZLE,tickN,bankruptOrder.join('→'))
+        +extra
         +(s.n>=2?' 🔥 '+s.n+'!'+(s.best>s.n?' (best: '+s.best+')':''):'');
       $('sharebtn').style.display='inline-block';
       $('sharebtn').textContent=t('shareBtn');
@@ -762,7 +992,8 @@ $('prestige').onclick=()=>{
     location.reload(); return;
   }
   prestige++; chaos*=1.25; won=false; tickN=0; bankruptOrder=[];
-  bils.forEach((b,i)=>{ b.worth=START_WORTH*Math.pow(8,prestige); b.alive=true; b.toys=TOYS[i].slice(); });
+  // fresh draw from the pool: new round, new terrible people
+  buildCast(castPick(new RNG(((Date.now()%2147483647)+prestige)>>>0)));
   assets.forEach(a=>{ a.price=a.base*(0.8+Math.random()*0.6); a.hist=[a.price]; a.lastTick=a.price; a.held=0; });
   $('overlay').classList.remove('show');
   document.querySelectorAll('.confetti').forEach(c=>c.remove());
@@ -785,11 +1016,11 @@ function renderBils(){
       +'<div class="bubble"></div>'
       +doodles[b.key]
       +'<div class="name">'+b.name+(b.alive?'':' 💀')+'</div>'
-      +'<div class="title">'+t('bilTitle'+i)+'</div>'
+      +'<div class="title">'+t(b.titleKey)+'</div>'
       +'<div class="toys">'+(b.alive?b.toys.join(' '):t('seized'))+'</div>'
       +'<div class="worthwrap"><div class="worthbar" style="width:'+pct+'%; background:'+(pct>50?'#4a9e5c':pct>25?'#d9a441':'#e05252')+'"></div></div>'
-      +'<div class="worthtxt">'+(b.alive?fmt(b.worth)+' <small>'+t('perRound',fmt(b.worth*0.003+1))+'</small>':t('broke'))+'</div>'
-      +'<div class="rule">'+t('bilRule'+i)+'</div>'
+      +'<div class="worthtxt">'+(b.alive?fmt(b.worth)+(CREW_SYNC?' <small>👯</small>':' <small>'+t('perRound',fmt(b.worth*0.003+1))+'</small>'):t('broke'))+'</div>'
+      +'<div class="rule">'+t(b.ruleKey)+'</div>'
       +'</div>';
   }).join('');
 }
@@ -799,7 +1030,7 @@ function renderMarket(){
       const b=bils[a.owner], dead=!b.alive;
       const dir=a.hist.length>1?(a.price>=a.hist[a.hist.length-2]?'up':'down'):'up';
       return '<tr>'
-        +'<td>'+a.emoji+' <b>'+t('asset'+i)+'</b><br><small style="opacity:.6">'+t('house')+b.name.split(' ')[0]+(dead?' 💀':'')+'</small></td>'
+        +'<td>'+a.emoji+' <b>'+t(a.assetKey)+'</b><br><small style="opacity:.6">'+t('house')+b.name.split(' ')[0]+(dead?' 💀':'')+'</small></td>'
         +'<td class="price '+dir+'">'+(dead?'—':((dir==='up'?'▲ ':'▼ ')+fmt(a.price)))+'</td>'
         +'<td>'+spark(a)+'</td>'
         +'<td>'+a.held+'/'+cap()+'</td>'
@@ -830,7 +1061,8 @@ function render(){
   const focusId=(document.activeElement&&document.activeElement.id)||null;
   $('cash').textContent=fmt(cash).slice(1);
   const sk=getStreak();
-  $('badges').textContent='🏆'.repeat(prestige)+(sk.n>=2?' 🔥'+sk.n:'');
+  $('badges').textContent='🏆'.repeat(prestige)+(sk.n>=2?' 🔥'+sk.n:'')
+    +(mode==='daily'&&beatTarget&&!bils.every(b=>!b.alive)?' 🎯'+beatTarget:'');
   $('sharetop').style.display=(mode==='daily')?'':'none';
   renderBils(); renderMarket(); renderUpgrades();
   if(focusId){ const el=$(focusId); if(el&&!el.disabled)el.focus(); }
@@ -849,6 +1081,7 @@ function applyLang(){
   $('prestige').textContent=(mode==='daily'&&won)?t('playFreeBtn'):t('prestigeBtn');
   $('sharebtn').textContent=t('shareBtn');
   $('modebtn').textContent=(mode==='daily')?t('freePlay'):t('dailyBtn',PUZZLE);
+  $('modechip').textContent=(mode==='free')?t('freeBtn'):(crew?'👯 '+crew+(CREW_SYNC?' ⚡':''):'🌍 #'+PUZZLE);
   const sel=$('langsel');
   if(sel.options.length!==LANG_ORDER.length){
     sel.innerHTML=LANG_ORDER.map(c=>'<option value="'+c+'">'+(LANG_NAMES[c]||c)+'</option>').join('');
@@ -965,11 +1198,24 @@ applyFS();
 
 function bootGame(){
   $('start').style.display='none';
+  document.body.classList.add(mode==='free'?'m-free':(crew?'m-crew':'m-solo'));
+  // draw today's cast of 4 from the pool of 8
+  let castIdx=null;
+  if(mode==='daily'){
+    castIdx=castPick(new RNG(((SEED_BASE^0x9e3779b9)>>>0)||1));
+  }else{
+    try{
+      const s0=JSON.parse(localStorage.getItem(KEY));
+      if(s0&&Array.isArray(s0.cast)&&s0.cast.length===4)castIdx=s0.cast;
+    }catch(e){}
+    if(!castIdx)castIdx=castPick(new RNG((Date.now()%2147483647)>>>0));
+  }
+  buildCast(castIdx);
   // sweep expired daily saves
   try{
     for(let k=localStorage.length-1;k>=0;k--){
       const key=localStorage.key(k);
-      if(key&&key.indexOf('rtr-daily-')===0&&key.split('-')[2]!==String(DAY))localStorage.removeItem(key);
+      if(key&&(key.indexOf('rtr-daily-')===0||key.indexOf('rtr-beat-')===0)&&key.split('-')[2]!==String(DAY))localStorage.removeItem(key);
     }
   }catch(e){}
   applyLang();
@@ -1051,7 +1297,7 @@ function initStart(){
 }
 
 /* the public URL of the game — appended to share texts. update if it moves. */
-const GAME_URL='https://dameoffensive.github.io/ruin-the-rich/';
+const GAME_URL='https://dameoffensive-cloud.github.io/RuinTheRich/';
 /* support link: shown on the title screen and win screen. empty = hidden. */
 const KOFI_URL='https://ko-fi.com/dameoffensive';
 /* beta lock: put a word between the quotes to password-protect this build.
